@@ -1,0 +1,20 @@
+{
+    "name": "jpi/http",
+    "description": "Basic HTTP implementation",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Jahidul Pabel Islam",
+            "email": "me@jahidulpabelislam.com"
+        }
+    ],
+    "keywords": ["http"],
+    "require": {
+        "php": "^7.1 || ^8.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "JPI\\HTTP\\": "src/"
+        }
+    }
+}
