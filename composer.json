@@ -10,7 +10,8 @@
     ],
     "keywords": ["http"],
     "require": {
-        "php": "^7.1 || ^8.0"
+        "php": "^7.1 || ^8.0",
+        "jpi/utils": "^0.4.1"
     },
     "autoload": {
         "psr-4": {
