@@ -28,7 +28,7 @@ class Response {
 
     public $headers;
 
-    public function __construct(int $statusCode = 500, array $content = [], array $headers = []) {
+    public function __construct(int $statusCode = 500, string $content = null, array $headers = []) {
         $this->content = $content;
         $this->statusCode = $statusCode;
         $this->headers = new Headers($headers);
@@ -89,21 +89,21 @@ class Response {
         return $this->headers;
     }
 
-    public function setContent(?array $content): void {
+    public function setContent(?string $content): void {
         $this->content = $content;
     }
 
-    public function withContent(?array $content): Response {
+    public function withContent(?string $content): Response {
         $this->setContent($content);
         return $this;
     }
 
-    public function getContent(): array {
+    public function getContent(): ?string {
         return $this->content;
     }
 
     public function getETag(): string {
-        return md5(json_encode($this->getContent()));
+        return md5($this->getContent());
     }
 
     protected function sendHeaders(): void {
@@ -120,19 +120,9 @@ class Response {
         header("HTTP/1.1 {$this->getStatusCode()} {$this->getStatusMessage()}");
     }
 
-    protected function sendContent(bool $pretty): void {
-        $encodeParams = $pretty ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0;
-        echo json_encode($this->getContent(), $encodeParams);
-    }
-
-    public function send(bool $pretty = false): void {
-        if (!is_null($this->content)) {
-            $this->addHeader("Content-Type", "application/json");
-        }
+    public function send(): void {
         $this->sendHeaders();
 
-        if (!is_null($this->content)) {
-            $this->sendContent($pretty);
-        }
+        echo $this->getContent();
     }
 }
