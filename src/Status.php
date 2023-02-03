@@ -2,14 +2,16 @@
 
 namespace JPI\HTTP;
 
-class Status {
+interface Status {
 
     /**
+     * HTTP status messages keyed by the status code.
+     *
      * https://github.com/zendframework/zend-http/blob/master/src/Response.php#L104
      * https://www.w3.org/Protocols/rfc2616/rfc2616.html
      * https://gist.github.com/henriquemoody/6580488
      */
-    protected const CODE_TO_MESSAGE = [
+    public const MESSAGES = [
         // Informational
         100 => "Continue",
         101 => "Switching Protocols",
@@ -57,8 +59,4 @@ class Status {
         504 => "Gateway Timeout",
         505 => "HTTP Version Not Supported",
     ];
-
-    public static function getMessageForCode(int $code): ?string {
-        return static::CODE_TO_MESSAGE[$code] ?? null;
-    }
 }

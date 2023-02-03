@@ -70,7 +70,7 @@ class Response {
 
     public function getStatusMessage(): string {
         if (is_null($this->statusMessage)) {
-            $this->statusMessage = Status::getMessageForCode($this->getStatusCode());
+            $this->statusMessage = Status::MESSAGES[$this->getStatusCode()];
         }
 
         return $this->statusMessage;
