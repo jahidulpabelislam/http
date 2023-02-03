@@ -34,6 +34,10 @@ class Response {
         $this->headers = new Headers($headers);
     }
 
+    public static function json(int $statusCode = 500, array $content = [], array $headers = []): Response {
+        return new static($statusCode, json_encode($content), $headers);
+    }
+
     public function setCacheHeaders(array $headers): void {
         if (isset($headers["Expires"]) && $headers["Expires"] instanceof DateTime) {
             $headers["Expires"]->setTimezone(static::getCacheTimeZone());
