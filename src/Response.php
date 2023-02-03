@@ -7,23 +7,9 @@ use DateTimeZone;
 
 class Response {
 
-    private const CACHE_TIMEZONE = "Europe/London";
-
-    /**
-     * @var DateTimeZone|null
-     */
-    private static $cacheTimeZone = null;
-
-    public static function getCacheTimeZone(): DateTimeZone {
-        if (is_null(static::$cacheTimeZone)) {
-            static::$cacheTimeZone = new DateTimeZone(self::CACHE_TIMEZONE);
-        }
-
-        return static::$cacheTimeZone;
-    }
-
     protected $statusCode;
     protected $statusMessage = null;
+
     protected $content;
 
     public $headers;
@@ -40,7 +26,7 @@ class Response {
 
     public function setCacheHeaders(array $headers): void {
         if (isset($headers["Expires"]) && $headers["Expires"] instanceof DateTime) {
-            $headers["Expires"]->setTimezone(static::getCacheTimeZone());
+            $headers["Expires"]->setTimezone(new DateTimeZone("Europe/London"));
             $headers["Expires"] = $headers["Expires"]->format("D, d M Y H:i:s") . " GMT";
         }
 
