@@ -15,7 +15,7 @@ class Request {
     public $uriParts;
 
     public $params;
-    public $data;
+    public $post;
     public $body;
 
     public $files;
@@ -55,6 +55,7 @@ class Request {
         $this->uriParts = explode("/", $uri);
 
         $this->params = self::sanitizeData($_GET);
+        $this->post = self::sanitizeData($_POST);
 
         $this->body = file_get_contents("php://input");
 
