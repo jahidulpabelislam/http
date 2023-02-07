@@ -59,13 +59,13 @@ class Request {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             $this->data = self::sanitizeData($data);
-
-            $files = [];
-            foreach ($_FILES as $key => $item) {
-                $files[$key] = $this->normaliseFileItem($item);
-            }
-            $this->files = $files;
         }
+
+        $files = [];
+        foreach ($_FILES as $key => $item) {
+            $files[$key] = $this->normaliseFileItem($item);
+        }
+        $this->files = $files;
 
         $this->headers = new Headers(apache_request_headers());
 
