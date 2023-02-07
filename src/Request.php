@@ -16,6 +16,7 @@ class Request {
 
     public $params;
     public $data;
+    public $body;
 
     public $files;
 
@@ -55,11 +56,7 @@ class Request {
 
         $this->params = self::sanitizeData($_GET);
 
-        if (in_array($this->method, ["POST", "PUT"])) {
-            $json = file_get_contents("php://input");
-            $data = json_decode($json, true);
-            $this->data = self::sanitizeData($data);
-        }
+        $this->body = file_get_contents("php://input");
 
         $files = [];
         foreach ($_FILES as $key => $item) {
