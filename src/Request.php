@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace JPI\HTTP;
 
 use JPI\Utils\Collection;
