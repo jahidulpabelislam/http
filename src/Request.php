@@ -76,9 +76,20 @@ class Request {
         $this->identifiers = new Collection();
     }
 
-    private function normaliseFileItem(array $item): array {
+    /**
+     * @param array $item
+     * @return UploadedFile|array
+     * @author Jahidul Islam <jahidul@d3r.com>
+     */
+    private function normaliseFileItem(array $item) {
         if (!is_array($item["tmp_name"])) {
-            return $item;
+            return new UploadedFile(
+                $item["name"],
+                $item["size"],
+                $item["type"],
+                $item["error"],
+                $item["tmp_name"]
+            );
         }
 
         $normalised = [];
