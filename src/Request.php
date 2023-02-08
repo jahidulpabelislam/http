@@ -74,6 +74,8 @@ class Request extends Message {
         $this->headers = new Headers(apache_request_headers());
 
         $this->identifiers = new Collection();
+
+        $this->protocolVersion = 1.1;
     }
 
     /**
