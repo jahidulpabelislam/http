@@ -7,23 +7,30 @@ namespace JPI\HTTP;
 use DateTime;
 use DateTimeZone;
 
-class Response {
+class Response extends Message {
 
     protected $statusCode;
     protected $statusMessage = null;
 
-    protected $content;
-
-    public $headers;
-
-    public function __construct(int $statusCode = 500, string $content = null, array $headers = []) {
-        $this->content = $content;
+    public function __construct(
+        int $statusCode = 500,
+        string $body = null,
+        array $headers = [],
+        float $protocolVersion = 1.1
+    ) {
+        $this->body = $body;
         $this->statusCode = $statusCode;
         $this->headers = new Headers($headers);
+        $this->protocolVersion = $protocolVersion;
     }
 
-    public static function json(int $statusCode = 500, array $content = [], array $headers = []): Response {
-        return new static($statusCode, json_encode($content), $headers);
+    public static function json(
+        int $statusCode = 500,
+        array $body = [],
+        array $headers = [],
+        float $protocolVersion = 1.1
+    ): Response {
+        return new static($statusCode, json_encode($body), $headers, $protocolVersion);
     }
 
     public function setCacheHeaders(array $headers): void {
@@ -77,29 +84,21 @@ class Response {
         return $this;
     }
 
-    public function getHeaders(): Headers {
-        return $this->headers;
+    public function setBody(?string $body): void {
+        $this->body = $body;
     }
 
-    public function setContent(?string $content): void {
-        $this->content = $content;
-    }
-
-    public function withContent(?string $content): Response {
-        $this->setContent($content);
+    public function withBody(?string $body): Response {
+        $this->setBody($body);
         return $this;
     }
 
-    public function getContent(): ?string {
-        return $this->content;
-    }
-
     public function getETag(): string {
-        return md5($this->getContent());
+        return md5($this->getBody());
     }
 
     protected function sendHeaders(): void {
-        if (!is_null($this->content)) {
+        if (!is_null($this->body)) {
             foreach ($this->headers as $name => $value) {
                 if (is_array($value)) {
                     $value = implode(", ", $value);
@@ -109,12 +108,12 @@ class Response {
             }
         }
 
-        header("HTTP/1.1 {$this->getStatusCode()} {$this->getStatusMessage()}");
+        header("HTTP/{$this->getProtocolVersion()} {$this->getStatusCode()} {$this->getStatusMessage()}");
     }
 
     public function send(): void {
         $this->sendHeaders();
 
-        echo $this->getContent();
+        echo $this->getBody();
     }
 }
