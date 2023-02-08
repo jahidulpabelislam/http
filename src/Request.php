@@ -107,6 +107,18 @@ class Request extends Message {
         return $normalised;
     }
 
+    public function getServer(): Collection {
+        return $this->server;
+    }
+
+    public function getCookies(): Collection {
+        return $this->cookies;
+    }
+
+    public function getParams(): Collection {
+        return $this->params;
+    }
+
     public function hasParam(string $param): bool {
         return isset($this->params[$param]);
     }
@@ -117,5 +129,16 @@ class Request extends Message {
 
     public function getIdentifier(string $identifier, $default = null) {
         return $this->identifiers->get($identifier, $default);
+    }
+
+    public function getMethod(): string {
+        return $this->method;
+    }
+
+    /**
+     * @return UploadedFile[]
+     */
+    public function getFiles(): array {
+        return $this->files;
     }
 }
