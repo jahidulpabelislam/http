@@ -11,8 +11,8 @@ class Request {
 
     public $method;
 
-    public $uri;
-    public $uriParts;
+    public $path;
+    public $pathParts;
 
     public $params;
     public $post;
@@ -48,11 +48,11 @@ class Request {
 
         $this->method = strtoupper($this->server->get("REQUEST_METHOD"));
 
-        $this->uri = parse_url($this->server->get("REQUEST_URI"), PHP_URL_PATH);
+        $this->path = parse_url($this->server->get("REQUEST_URI"), PHP_URL_PATH);
 
         // Get the individual parts of the request URI as an array
-        $uri = URL::removeSlashes($this->uri);
-        $this->uriParts = explode("/", $uri);
+        $path = URL::removeSlashes($this->path);
+        $this->pathParts = explode("/", $path);
 
         $this->params = self::sanitizeData($_GET);
         $this->post = self::sanitizeData($_POST);
