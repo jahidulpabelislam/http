@@ -22,6 +22,15 @@ class Message {
         return $this->headers;
     }
 
+    public function addHeader(string $header, $value): void {
+        $this->headers->set($header, $value);
+    }
+
+    public function withHeader(string $header, $value): Message {
+        $this->addHeader($header, $value);
+        return $this;
+    }
+
     public function hasHeader(string $name): bool {
         return $this->headers->isset($name);
     }
@@ -34,7 +43,16 @@ class Message {
         return implode(", ", $this->headers->get($name, []));
     }
 
+    public function setBody(?string $body): void {
+        $this->body = $body;
+    }
+
     public function getBody(): string {
         return $this->body;
+    }
+
+    public function withBody(?string $body): Message {
+        $this->setBody($body);
+        return $this;
     }
 }

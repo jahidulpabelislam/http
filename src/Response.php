@@ -75,24 +75,6 @@ class Response extends Message {
         return $this->statusMessage;
     }
 
-    public function addHeader(string $header, $value): void {
-        $this->headers->set($header, $value);
-    }
-
-    public function withHeader(string $header, $value): Response {
-        $this->addHeader($header, $value);
-        return $this;
-    }
-
-    public function setBody(?string $body): void {
-        $this->body = $body;
-    }
-
-    public function withBody(?string $body): Response {
-        $this->setBody($body);
-        return $this;
-    }
-
     public function getETag(): string {
         return md5($this->getBody());
     }
