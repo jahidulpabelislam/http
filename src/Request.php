@@ -7,7 +7,7 @@ namespace JPI\HTTP;
 use JPI\Utils\Collection;
 use JPI\Utils\URL;
 
-class Request {
+class Request extends Message {
 
     public $server;
 
