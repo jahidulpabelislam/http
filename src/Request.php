@@ -23,6 +23,8 @@ class Request extends Message {
 
     protected $files;
 
+    protected $url;
+
     protected $identifiers;
 
     /**
@@ -71,6 +73,12 @@ class Request extends Message {
         $this->headers = new Headers(apache_request_headers());
 
         $this->identifiers = new Collection();
+
+        $url = new URL($this->server->get("REQUEST_URI"));
+        $url->setScheme($this->server->get("HTTPS") !== "off" ? "https" : "http");
+        $url->setHost($this->server->get("HTTP_HOST"));
+
+        $this->url = $url;
 
         $this->protocolVersion = 1.1;
     }
@@ -147,6 +155,10 @@ class Request extends Message {
      */
     public function getFiles(): array {
         return $this->files;
+    }
+
+    public function getURL(): URL {
+        return $this->url;
     }
 
     public function getIdentifiers(): Collection {
