@@ -8,7 +8,7 @@ class Message {
     protected $headers;
     protected $body;
 
-    public function __construct(array $headers = [], string $body = '', float $protocolVersion = 1.1) {
+    public function __construct(array $headers = [], string $body = "", float $protocolVersion = 1.1) {
         $this->protocolVersion = $protocolVersion;
         $this->headers = new Headers($headers);
         $this->body = $body;
