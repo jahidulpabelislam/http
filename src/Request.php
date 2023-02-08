@@ -9,24 +9,21 @@ use JPI\Utils\URL;
 
 class Request extends Message {
 
-    public $server;
+    protected $server;
 
-    public $cookies;
+    protected $cookies;
 
-    public $method;
+    protected $method;
 
-    public $path;
-    public $pathParts;
+    protected $path;
+    protected $pathParts;
 
-    public $params;
-    public $post;
-    public $body;
+    protected $params;
+    protected $post;
 
-    public $files;
+    protected $files;
 
-    public $headers;
-
-    public $identifiers;
+    protected $identifiers;
 
     /**
      * @param $value array|string
@@ -117,6 +114,18 @@ class Request extends Message {
         return $this->cookies;
     }
 
+    public function getMethod(): string {
+        return $this->method;
+    }
+
+    public function getPath(): string {
+        return $this->path;
+    }
+
+    public function getPathParts(): array {
+        return $this->pathParts;
+    }
+
     public function getParams(): Collection {
         return $this->params;
     }
@@ -129,12 +138,8 @@ class Request extends Message {
         return $this->params->get($param, $default);
     }
 
-    public function getIdentifier(string $identifier, $default = null) {
-        return $this->identifiers->get($identifier, $default);
-    }
-
-    public function getMethod(): string {
-        return $this->method;
+    public function getPost(): Collection {
+        return $this->post;
     }
 
     /**
@@ -142,5 +147,13 @@ class Request extends Message {
      */
     public function getFiles(): array {
         return $this->files;
+    }
+
+    public function getIdentifiers(): Collection {
+        return $this->identifiers;
+    }
+
+    public function getIdentifier(string $identifier, $default = null) {
+        return $this->identifiers->get($identifier, $default);
     }
 }
