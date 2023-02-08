@@ -11,6 +11,8 @@ class Request {
 
     public $server;
 
+    public $cookies;
+
     public $method;
 
     public $path;
@@ -47,6 +49,8 @@ class Request {
 
     public function __construct() {
         $this->server = new Collection($_SERVER);
+
+        $this->cookies = new Collection($_COOKIE);
 
         $this->method = strtoupper($this->server->get("REQUEST_METHOD"));
 
