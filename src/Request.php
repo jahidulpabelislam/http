@@ -25,7 +25,7 @@ class Request extends Message {
 
     protected $url;
 
-    protected $identifiers;
+    protected $attributes;
 
     /**
      * @param $value array|string
@@ -79,7 +79,7 @@ class Request extends Message {
 
         $this->headers = new Headers($headers);
 
-        $this->identifiers = new Collection();
+        $this->attributes = new Collection();
 
         $url = new URL($this->server->get("REQUEST_URI"));
         $url->setScheme($this->server->get("HTTPS") !== "off" ? "https" : "http");
@@ -180,11 +180,15 @@ class Request extends Message {
         return $this->url;
     }
 
-    public function getIdentifiers(): Collection {
-        return clone $this->identifiers;
+    public function setAttribute(string $attribute, $value): void {
+        $this->attributes->set($attribute, $value);
     }
 
-    public function getIdentifier(string $identifier, $default = null) {
-        return $this->identifiers->get($identifier, $default);
+    public function getAttributes(): Collection {
+        return clone $this->attributes;
+    }
+
+    public function getAttribute(string $attribute, $default = null) {
+        return $this->attributes->get($attribute, $default);
     }
 }
