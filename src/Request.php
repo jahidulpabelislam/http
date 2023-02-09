@@ -46,10 +46,18 @@ class Request extends Message {
         return $value;
     }
 
-    public function __construct() {
-        $this->server = new Collection($_SERVER);
+    public function __construct(
+        array $server,
+        array $cookies,
+        array $params,
+        array $post,
+        string $body,
+        array $files,
+        array $headers
+    ) {
+        $this->server = new Collection($server);
 
-        $this->cookies = new Collection($_COOKIE);
+        $this->cookies = new Collection($cookies);
 
         $this->method = strtoupper($this->server->get("REQUEST_METHOD"));
 
@@ -59,18 +67,17 @@ class Request extends Message {
         $path = URL::removeSlashes($this->path);
         $this->pathParts = explode("/", $path);
 
-        $this->params = self::sanitizeData($_GET);
-        $this->post = self::sanitizeData($_POST);
+        $this->params = self::sanitizeData($params);
+        $this->post = self::sanitizeData($post);
 
-        $this->body = file_get_contents("php://input");
+        $this->body = $body;
 
-        $files = [];
-        foreach ($_FILES as $key => $item) {
-            $files[$key] = $this->normaliseFileItem($item);
+        $this->files = [];
+        foreach ($files as $key => $item) {
+            $this->files[$key] = $this->normaliseFileItem($item);
         }
-        $this->files = $files;
 
-        $this->headers = new Headers(apache_request_headers());
+        $this->headers = new Headers($headers);
 
         $this->identifiers = new Collection();
 
@@ -81,6 +88,18 @@ class Request extends Message {
         $this->url = $url;
 
         $this->protocolVersion = 1.1;
+    }
+
+    public static function fromGlobals(): Request {
+        return new static(
+            $_SERVER,
+            $_COOKIE,
+            $_GET,
+            $_POST,
+            file_get_contents("php://input"),
+            $_FILES,
+            apache_request_headers()
+        );
     }
 
     /**
