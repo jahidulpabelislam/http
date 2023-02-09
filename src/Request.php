@@ -115,11 +115,11 @@ class Request extends Message {
     }
 
     public function getServer(): Collection {
-        return $this->server;
+        return clone $this->server;
     }
 
     public function getCookies(): Collection {
-        return $this->cookies;
+        return clone $this->cookies;
     }
 
     public function getMethod(): string {
@@ -135,7 +135,7 @@ class Request extends Message {
     }
 
     public function getParams(): Collection {
-        return $this->params;
+        return clone $this->params;
     }
 
     public function hasParam(string $param): bool {
@@ -147,7 +147,7 @@ class Request extends Message {
     }
 
     public function getPost(): Collection {
-        return $this->post;
+        return clone $this->post;
     }
 
     /**
@@ -162,7 +162,7 @@ class Request extends Message {
     }
 
     public function getIdentifiers(): Collection {
-        return $this->identifiers;
+        return clone $this->identifiers;
     }
 
     public function getIdentifier(string $identifier, $default = null) {
