@@ -23,7 +23,7 @@ class UploadedFile {
         $this->tempName = $tempName;
     }
 
-    public function moveTo(string $targetPath): bool {
+    public function saveTo(string $targetPath): bool {
         return move_uploaded_file($this->tempName, $targetPath);
     }
 
