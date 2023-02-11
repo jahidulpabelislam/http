@@ -71,7 +71,7 @@ class Router {
         return "/^{$regex}$/";
     }
 
-    public function dispatch(Request $request): Response {
+    public function run(Request $request): Response {
         $url = $request->getURL();
         $uri = $url->getPath();
 
