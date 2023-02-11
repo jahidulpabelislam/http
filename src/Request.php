@@ -154,6 +154,10 @@ class Request extends Message {
         return $this->pathParts;
     }
 
+    public function getPathPart(int $index): ?string {
+        return $this->pathParts[$index] ?? null;
+    }
+
     public function getQueryParams(): Collection {
         return clone $this->queryParams;
     }
