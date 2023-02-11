@@ -71,7 +71,7 @@ class Router implements RequestHandlerInterface {
         return "/^{$regex}$/";
     }
 
-    public function run(Request $request, ?RequestHandlerInterface $next = null): Response {
+    public function run(Request $request): Response {
         $url = $request->getURL();
         $uri = $url->getPath();
 
