@@ -6,7 +6,7 @@ namespace JPI\HTTP;
 
 use Exception;
 
-class Router {
+class Router implements RequestHandlerInterface {
 
     protected $routes = [];
     protected $namedRoutes = [];
@@ -71,7 +71,7 @@ class Router {
         return "/^{$regex}$/";
     }
 
-    public function run(Request $request): Response {
+    public function run(Request $request, ?RequestHandlerInterface $next = null): Response {
         $url = $request->getURL();
         $uri = $url->getPath();
 
