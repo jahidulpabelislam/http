@@ -8,8 +8,14 @@ use Exception;
 
 class Router implements RequestHandlerInterface {
 
+    protected $request;
+
     protected $routes = [];
     protected $namedRoutes = [];
+
+    public function __construct(Request $request) {
+        $this->request = $request;
+    }
 
     /**
      * @param $path string
@@ -63,7 +69,9 @@ class Router implements RequestHandlerInterface {
         return "/^{$regex}$/";
     }
 
-    public function run(Request $request): Response {
+    public function run(): Response {
+        $request = $this->request;
+
         $url = $request->getURL();
         $uri = $url->getPath();
 
