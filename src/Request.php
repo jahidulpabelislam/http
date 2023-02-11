@@ -9,7 +9,7 @@ use JPI\Utils\URL;
 
 class Request extends Message {
 
-    protected $server;
+    protected $serverParams;
 
     protected $cookies;
 
@@ -18,8 +18,9 @@ class Request extends Message {
     protected $path;
     protected $pathParts;
 
-    protected $params;
-    protected $post;
+    protected $queryParams;
+
+    protected $postParams;
 
     protected $files;
 
@@ -47,28 +48,28 @@ class Request extends Message {
     }
 
     public function __construct(
-        array $server,
+        array $serverParams,
         array $cookies,
-        array $params,
-        array $post,
+        array $queryParams,
+        array $postParams,
         string $body,
         array $files,
         array $headers
     ) {
-        $this->server = new Collection($server);
+        $this->serverParams = new Collection($serverParams);
 
         $this->cookies = new Collection($cookies);
 
-        $this->method = strtoupper($this->server->get("REQUEST_METHOD"));
+        $this->method = strtoupper($this->serverParams->get("REQUEST_METHOD"));
 
-        $this->path = parse_url($this->server->get("REQUEST_URI"), PHP_URL_PATH);
+        $this->path = parse_url($this->serverParams->get("REQUEST_URI"), PHP_URL_PATH);
 
         // Get the individual parts of the request URI as an array
         $path = URL::removeSlashes($this->path);
         $this->pathParts = explode("/", $path);
 
-        $this->params = self::sanitizeData($params);
-        $this->post = self::sanitizeData($post);
+        $this->queryParams = self::sanitizeData($queryParams);
+        $this->postParams = self::sanitizeData($postParams);
 
         $this->body = $body;
 
@@ -81,9 +82,9 @@ class Request extends Message {
 
         $this->attributes = new Collection();
 
-        $url = new URL($this->server->get("REQUEST_URI"));
-        $url->setScheme($this->server->get("HTTPS") !== "off" ? "https" : "http");
-        $url->setHost($this->server->get("HTTP_HOST"));
+        $url = new URL($this->serverParams->get("REQUEST_URI"));
+        $url->setScheme($this->serverParams->get("HTTPS") !== "off" ? "https" : "http");
+        $url->setHost($this->serverParams->get("HTTP_HOST"));
 
         $this->url = $url;
 
@@ -133,8 +134,8 @@ class Request extends Message {
         return $normalised;
     }
 
-    public function getServer(): Collection {
-        return clone $this->server;
+    public function getServerParams(): Collection {
+        return clone $this->serverParams;
     }
 
     public function getCookies(): Collection {
@@ -153,20 +154,20 @@ class Request extends Message {
         return $this->pathParts;
     }
 
-    public function getParams(): Collection {
-        return clone $this->params;
+    public function getQueryParams(): Collection {
+        return clone $this->queryParams;
     }
 
-    public function hasParam(string $param): bool {
-        return isset($this->params[$param]);
+    public function hasQueryParam(string $param): bool {
+        return isset($this->queryParams[$param]);
     }
 
-    public function getParam(string $param, $default = null) {
-        return $this->params->get($param, $default);
+    public function getQueryParam(string $param, $default = null) {
+        return $this->queryParams->get($param, $default);
     }
 
-    public function getPost(): Collection {
-        return clone $this->post;
+    public function getPostParams(): Collection {
+        return clone $this->postParams;
     }
 
     /**
