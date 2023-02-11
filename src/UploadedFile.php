@@ -42,4 +42,8 @@ class UploadedFile {
     public function getMediaType(): string {
         return $this->mediaType;
     }
+
+    public function getTempName(): string {
+        return $this->tempName;
+    }
 }
