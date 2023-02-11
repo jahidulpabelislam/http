@@ -22,17 +22,9 @@ class Router implements RequestHandlerInterface {
             $this->routes[$path] = [];
         }
 
-        $route = [];
-
-        if (is_array($callback)) {
-            $route["controller"] = $callback[0];
-            $route["function"] = $callback[1];
-        }
-        else if (is_callable($callback)) {
-            $route["callable"] = $callback;
-        }
-
-        $this->routes[$path][$method] = $route;
+        $this->routes[$path][$method] = [
+            "callable" => $callback,
+        ];
 
         if ($name) {
             $this->namedRoutes[$name] = $path;
@@ -93,20 +85,21 @@ class Router implements RequestHandlerInterface {
                 ]);
             }
 
-            $route = $routes[$method];
             array_shift($matches);
             $identifiers = $this->getIdentifiersFromMatches($matches);
 
             $request->setAttribute("identifiers", $identifiers);
 
-            if (isset($route["callable"])) {
+            $route = $routes[$method];
+
+            if (is_callable($route["callable"])) {
                 return $route["callable"](...$identifiers);
             }
 
-            $controllerClass = $route["controller"];
+            $controllerClass = $route["callable"][0];
             $controller = new $controllerClass($request);
 
-            return call_user_func_array([$controller, $route["function"]], array_values($identifiers));
+            return call_user_func_array([$controller, $route["callable"][1]], array_values($identifiers));
         }
 
         return Response::json(404, [
