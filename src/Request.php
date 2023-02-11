@@ -49,12 +49,12 @@ class Request extends Message {
 
     public function __construct(
         array $serverParams,
-        array $cookies,
+        array $headers,
         array $queryParams,
         array $postParams,
-        string $body,
-        array $files,
-        array $headers
+        array $cookies = [],
+        string $body = "",
+        array $files = []
     ) {
         $this->serverParams = new Collection($serverParams);
 
@@ -94,12 +94,12 @@ class Request extends Message {
     public static function fromGlobals(): Request {
         return new static(
             $_SERVER,
-            $_COOKIE,
+            apache_request_headers(),
             $_GET,
             $_POST,
+            $_COOKIE,
             file_get_contents("php://input"),
-            $_FILES,
-            apache_request_headers()
+            $_FILES
         );
     }
 
