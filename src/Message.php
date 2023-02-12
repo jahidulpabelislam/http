@@ -40,7 +40,7 @@ class Message {
     }
 
     public function getHeaderLine(string $name): string {
-        return implode(", ", $this->headers->get($name, []));
+        return implode(", ", $this->getHeader($name));
     }
 
     public function setBody(?string $body): void {
