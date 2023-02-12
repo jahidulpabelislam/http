@@ -158,6 +158,10 @@ class Request extends Message {
         return $this->pathParts[$index] ?? null;
     }
 
+    public function setQueryParams(Collection $params): void {
+        $this->queryParams =  $params;
+    }
+
     public function getQueryParams(): Collection {
         return clone $this->queryParams;
     }
