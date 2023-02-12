@@ -60,9 +60,9 @@ class Request extends Message {
 
         $this->cookies = new Collection($cookies);
 
-        $this->method = strtoupper($this->serverParams->get("REQUEST_METHOD"));
+        $this->method = strtoupper($this->getServerParam("REQUEST_METHOD"));
 
-        $this->path = parse_url($this->serverParams->get("REQUEST_URI"), PHP_URL_PATH);
+        $this->path = parse_url($this->getServerParam("REQUEST_URI"), PHP_URL_PATH);
 
         // Get the individual parts of the request URI as an array
         $path = URL::removeSlashes($this->path);
@@ -82,9 +82,9 @@ class Request extends Message {
 
         $this->attributes = new Collection();
 
-        $url = new URL($this->serverParams->get("REQUEST_URI"));
-        $url->setScheme($this->serverParams->get("HTTPS") !== "off" ? "https" : "http");
-        $url->setHost($this->serverParams->get("HTTP_HOST"));
+        $url = new URL($this->getServerParam("REQUEST_URI"));
+        $url->setScheme($this->getServerParam("HTTPS") !== "off" ? "https" : "http");
+        $url->setHost($this->getServerParam("HTTP_HOST"));
 
         $this->url = $url;
 
@@ -136,6 +136,10 @@ class Request extends Message {
 
     public function getServerParams(): Collection {
         return clone $this->serverParams;
+    }
+
+    public function getServerParam(string $param, string $default = ""): string {
+        return $this->serverParams->get($param, $default);
     }
 
     public function getCookies(): Collection {
