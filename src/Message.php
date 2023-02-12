@@ -36,7 +36,7 @@ class Message {
     }
 
     public function getHeader(string $name): array {
-        return $this->headers->get($name, "");
+        return $this->headers->get($name, []);
     }
 
     public function getHeaderLine(string $name): string {
