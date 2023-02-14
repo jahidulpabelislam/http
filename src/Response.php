@@ -14,7 +14,7 @@ class Response extends Message {
 
     public function __construct(
         int $statusCode = 500,
-        string $body = null,
+        string $body = "",
         array $headers = [],
         float $protocolVersion = 1.1
     ) {
