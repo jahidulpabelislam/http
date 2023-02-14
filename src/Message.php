@@ -43,7 +43,7 @@ class Message {
         return implode(", ", $this->getHeader($name));
     }
 
-    public function setBody(?string $body): void {
+    public function setBody(string $body): void {
         $this->body = $body;
     }
 
@@ -51,7 +51,7 @@ class Message {
         return $this->body;
     }
 
-    public function withBody(?string $body): Message {
+    public function withBody(string $body): Message {
         $this->setBody($body);
         return $this;
     }
