@@ -17,6 +17,14 @@ class Router implements RequestHandlerInterface {
         $this->request = $request;
     }
 
+    public function setRequest(Request $request): void {
+        $this->request = $request;
+    }
+
+    public function getRequest(): Request {
+        return $this->request;
+    }
+
     /**
      * @param $path string
      * @param $method string
@@ -69,7 +77,7 @@ class Router implements RequestHandlerInterface {
         return "/^{$regex}$/";
     }
 
-    public function run(): Response {
+    public function handle(): Response {
         $request = $this->request;
 
         $url = $request->getURL();
