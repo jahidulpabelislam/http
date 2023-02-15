@@ -31,6 +31,10 @@ class Message {
         return $this;
     }
 
+    public function removeHeader(string $header): void {
+        $this->headers->unset($header);
+    }
+
     public function hasHeader(string $name): bool {
         return $this->headers->isset($name);
     }
