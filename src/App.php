@@ -2,7 +2,7 @@
 
 namespace JPI\HTTP;
 
-class App implements RequestHandlerInterface, RequestMiddlewareInterface {
+class App implements RequestHandlerInterface {
 
     protected $request;
     protected $router;
@@ -26,16 +26,12 @@ class App implements RequestHandlerInterface, RequestMiddlewareInterface {
         return $this->request;
     }
 
-    public function run(RequestMiddlewareInterface $next): Response {
+    public function handle(): Response {
         if (!count($this->middlewares)) {
             $this->router->setRequest($this->getRequest());
             return $this->router->handle();
         }
 
-        return $next->run($this);
-    }
-
-    public function handle(): Response {
         $next = array_shift($this->middlewares);
         $next->setRequest($this->getRequest());
         return $next->run($this);

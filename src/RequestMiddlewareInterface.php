@@ -8,5 +8,5 @@ interface RequestMiddlewareInterface {
 
     public function getRequest(): Request;
 
-    public function run(RequestMiddlewareInterface $next): Response;
+    public function run(RequestHandlerInterface $next): Response;
 }
