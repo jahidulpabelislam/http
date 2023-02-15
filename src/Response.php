@@ -30,9 +30,8 @@ class Response extends Message {
         array $headers = [],
         float $protocolVersion = 1.1
     ): Response {
-        $response = new static($statusCode, json_encode($body), $headers, $protocolVersion);
-        $response->addHeader("Content-Type", "application/json");
-
+        $response = new static($statusCode, "", $headers, $protocolVersion);
+        $response->withJSON($body);
         return $response;
     }
 
@@ -76,6 +75,12 @@ class Response extends Message {
         }
 
         return $this->statusMessage;
+    }
+
+    public function withJSON(array $body): Response {
+       $this->body = json_encode($body);
+       $this->addHeader("Content-Type", "application/json");
+       return $this;
     }
 
     public function getETag(): string {
