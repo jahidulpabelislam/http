@@ -30,7 +30,10 @@ class Response extends Message {
         array $headers = [],
         float $protocolVersion = 1.1
     ): Response {
-        return new static($statusCode, json_encode($body), $headers, $protocolVersion);
+        $response = new static($statusCode, json_encode($body), $headers, $protocolVersion);
+        $response->addHeader("Content-Type", "application/json");
+
+        return $response;
     }
 
     public function setCacheHeaders(array $headers): void {
