@@ -79,7 +79,7 @@ class Response extends Message {
 
     public function withJSON(array $body): Response {
        $this->body = json_encode($body);
-       $this->addHeader("Content-Type", "application/json");
+       $this->setHeader("Content-Type", "application/json");
        return $this;
     }
 

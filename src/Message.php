@@ -22,12 +22,23 @@ class Message {
         return $this->headers;
     }
 
-    public function addHeader(string $header, $value): void {
+    public function addHeader(string $header, $newValue): void {
+        $value = $this->getHeader($header);
+        $value[] = $newValue;
         $this->headers->set($header, $value);
     }
 
-    public function withHeader(string $header, $value): Message {
-        $this->addHeader($header, $value);
+    public function setHeader(string $header, $value): void {
+        $this->headers->set($header, $value);
+    }
+
+    public function withHeader(string $header, $value, bool $add = false): Message {
+        if ($add) {
+            $this->addHeader($header, $value);
+        }
+        else {
+            $this->setHeader($header, $value);
+        }
         return $this;
     }
 
@@ -43,8 +54,8 @@ class Message {
         return $this->headers->get($name, []);
     }
 
-    public function getHeaderLine(string $name): string {
-        return implode(", ", $this->getHeader($name));
+    public function getHeaderString(string $name): string {
+        return implode(",", $this->getHeader($name));
     }
 
     public function setBody(string $body): void {
