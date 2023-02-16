@@ -8,21 +8,13 @@ use Exception;
 
 class Router implements RequestHandlerInterface {
 
-    protected $request;
+    use RequestAwareTrait;
 
     protected $routes = [];
     protected $namedRoutes = [];
 
     public function __construct(Request $request) {
         $this->request = $request;
-    }
-
-    public function setRequest(Request $request): void {
-        $this->request = $request;
-    }
-
-    public function getRequest(): Request {
-        return $this->request;
     }
 
     /**
