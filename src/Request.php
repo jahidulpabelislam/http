@@ -28,6 +28,8 @@ class Request extends Message {
 
     protected $attributes;
 
+    protected $bodyArray = null;
+
     /**
      * @param $value array|string
      * @return Collection|string
@@ -36,7 +38,7 @@ class Request extends Message {
         if (is_array($value)) {
             $newArrayValues = new Collection();
             foreach ($value as $subKey => $subValue) {
-                $newArrayValues[(string)$subKey] = self::sanitizeData($subValue);
+                $newArrayValues[(string)$subKey] = static::sanitizeData($subValue);
             }
             $value = $newArrayValues;
         }
@@ -68,8 +70,8 @@ class Request extends Message {
         $path = URL::removeSlashes($this->path);
         $this->pathParts = explode("/", $path);
 
-        $this->queryParams = self::sanitizeData($queryParams);
-        $this->postParams = self::sanitizeData($postParams);
+        $this->queryParams = static::sanitizeData($queryParams);
+        $this->postParams = static::sanitizeData($postParams);
 
         $this->body = $body;
 
@@ -180,6 +182,14 @@ class Request extends Message {
 
     public function getPostParams(): Collection {
         return clone $this->postParams;
+    }
+
+    public function getArrayFromBody(): Collection {
+        if ($this->bodyArray === null) {
+            $this->bodyArray = static::sanitizeData(json_decode($this->getBody(), true));
+        }
+
+        return clone $this->bodyArray;
     }
 
     /**
