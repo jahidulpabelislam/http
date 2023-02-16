@@ -30,25 +30,6 @@ class Request extends Message {
 
     protected $bodyArray = null;
 
-    /**
-     * @param $value array|string
-     * @return Collection|string
-     */
-    private static function sanitizeData($value) {
-        if (is_array($value)) {
-            $newArrayValues = new Collection();
-            foreach ($value as $subKey => $subValue) {
-                $newArrayValues[(string)$subKey] = static::sanitizeData($subValue);
-            }
-            $value = $newArrayValues;
-        }
-        else if (is_string($value)) {
-            $value = urldecode(stripslashes(trim($value)));
-        }
-
-        return $value;
-    }
-
     public function __construct(
         array $serverParams,
         array $headers,
@@ -70,8 +51,8 @@ class Request extends Message {
         $path = URL::removeSlashes($this->path);
         $this->pathParts = explode("/", $path);
 
-        $this->queryParams = static::sanitizeData($queryParams);
-        $this->postParams = static::sanitizeData($postParams);
+        $this->queryParams = new Input($queryParams);
+        $this->postParams = new Input($postParams);
 
         $this->body = $body;
 
@@ -186,7 +167,7 @@ class Request extends Message {
 
     public function getArrayFromBody(): Collection {
         if ($this->bodyArray === null) {
-            $this->bodyArray = static::sanitizeData(json_decode($this->getBody(), true));
+            $this->bodyArray = new Input(json_decode($this->getBody(), true));
         }
 
         return clone $this->bodyArray;
