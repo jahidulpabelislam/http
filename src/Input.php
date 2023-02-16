@@ -10,6 +10,7 @@ class Input extends Collection {
 
     public function __construct(array $input) {
         $this->raw = $input;
+        $this->items = [];
 
         foreach ($input as $key => $value) {
             if (is_array($value)) {
