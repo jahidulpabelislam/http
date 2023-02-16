@@ -145,11 +145,11 @@ class Request extends Message {
         return $this->pathParts[$index] ?? null;
     }
 
-    public function setQueryParams(Collection $params): void {
+    public function setQueryParams(Input $params): void {
         $this->queryParams =  $params;
     }
 
-    public function getQueryParams(): Collection {
+    public function getQueryParams(): Input {
         return clone $this->queryParams;
     }
 
@@ -161,11 +161,11 @@ class Request extends Message {
         return $this->queryParams->get($param, $default);
     }
 
-    public function getPostParams(): Collection {
+    public function getPostParams(): Input {
         return clone $this->postParams;
     }
 
-    public function getArrayFromBody(): Collection {
+    public function getArrayFromBody(): Input {
         if ($this->bodyArray === null) {
             $this->bodyArray = new Input(json_decode($this->getBody(), true));
         }
