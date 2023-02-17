@@ -78,9 +78,9 @@ class Response extends Message {
     }
 
     public function withJSON(array $body): Response {
-       $this->body = json_encode($body);
-       $this->setHeader("Content-Type", "application/json");
-       return $this;
+        $this->body = json_encode($body);
+        $this->setHeader("Content-Type", "application/json");
+        return $this;
     }
 
     public function getETag(): string {
