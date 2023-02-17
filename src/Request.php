@@ -91,7 +91,7 @@ class Request extends Message {
      * @return UploadedFile|array
      * @author Jahidul Islam <jahidul@d3r.com>
      */
-    private function normaliseFileItem(array $item) {
+    protected function normaliseFileItem(array $item) {
         if (!is_array($item["tmp_name"])) {
             return new UploadedFile(
                 $item["name"],
