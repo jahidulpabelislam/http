@@ -86,6 +86,8 @@ class Router implements RequestHandlerInterface {
 
         $method = $request->getMethod();
 
+        $routeMatchedNotMethod = false;
+
         foreach ($this->routes as $path => $routes) {
             $pathRegex = $this->pathToRegex($path);
             if (!preg_match($pathRegex, $uri, $matches)) {
@@ -97,7 +99,8 @@ class Router implements RequestHandlerInterface {
             }
 
             if (!isset($routes[$method])) {
-                return call_user_func($this->methodNotAllowedHandler, $request);
+                $routeMatchedNotMethod = true;
+                continue;
             }
 
             array_shift($matches);
@@ -115,6 +118,10 @@ class Router implements RequestHandlerInterface {
             $controller = new $controllerClass($request);
 
             return call_user_func_array([$controller, $route["callable"][1]], array_values($identifiers));
+        }
+
+        if ($routeMatchedNotMethod) {
+            return call_user_func($this->methodNotAllowedHandler, $request);
         }
 
         return call_user_func($this->notFoundHandler, $request);
