@@ -6,25 +6,24 @@ namespace JPI\HTTP;
 
 class App implements RequestHandlerInterface {
 
-    use RequestAwareTrait;
-
     protected $router;
     protected $middlewares;
 
     /**
-     * @param Request $request
      * @param Router $router
      * @param RequestMiddlewareInterface[] $middlewares
      */
-    public function __construct(Request $request, Router $router, array $middlewares = []) {
-        $this->request = $request;
+    public function __construct(Router $router, array $middlewares = []) {
         $this->router = $router;
         $this->middlewares = $middlewares;
     }
 
+    public function getRequest(): Request {
+        return $this->router->getRequest();
+    }
+
     public function handle(): Response {
         if (!count($this->middlewares)) {
-            $this->router->setRequest($this->getRequest());
             return $this->router->handle();
         }
 

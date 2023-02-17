@@ -8,8 +8,6 @@ use Exception;
 
 class Router implements RequestHandlerInterface {
 
-    use RequestAwareTrait;
-
     protected $notFoundHandler;
     protected $methodNotAllowedHandler;
 
@@ -24,6 +22,10 @@ class Router implements RequestHandlerInterface {
         $this->request = $request;
         $this->notFoundHandler = $notFoundHandler;
         $this->methodNotAllowedHandler = $methodNotAllowedHandler;
+    }
+
+    public function getRequest(): Request {
+        return $this->request;
     }
 
     /**
