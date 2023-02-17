@@ -10,11 +10,20 @@ class Router implements RequestHandlerInterface {
 
     use RequestAwareTrait;
 
+    protected $notFoundHandler;
+    protected $methodNotAllowedHandler;
+
     protected $routes = [];
     protected $namedRoutes = [];
 
-    public function __construct(Request $request) {
+    public function __construct(
+        Request $request,
+        callable $notFoundHandler,
+        callable $methodNotAllowedHandler
+    ) {
         $this->request = $request;
+        $this->notFoundHandler = $notFoundHandler;
+        $this->methodNotAllowedHandler = $methodNotAllowedHandler;
     }
 
     /**
@@ -88,9 +97,7 @@ class Router implements RequestHandlerInterface {
             }
 
             if (!isset($routes[$method])) {
-                return Response::json(405, [
-                    "message" => "Method $method not allowed on $url.",
-                ]);
+                return call_user_func($this->methodNotAllowedHandler, $request);
             }
 
             array_shift($matches);
@@ -110,8 +117,6 @@ class Router implements RequestHandlerInterface {
             return call_user_func_array([$controller, $route["callable"][1]], array_values($identifiers));
         }
 
-        return Response::json(404, [
-            "message" => "Unrecognised URI ($url).",
-        ]);
+        return call_user_func($this->notFoundHandler, $request);
     }
 }
