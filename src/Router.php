@@ -110,14 +110,16 @@ class Router implements RequestHandlerInterface {
 
             $route = $routes[$method];
 
+            $identifiers = array_values($identifiers);
+
             if (is_callable($route["callable"])) {
-                return $route["callable"](...$identifiers);
+                return $route["callable"]($request, ...$identifiers);
             }
 
             $controllerClass = $route["callable"][0];
             $controller = new $controllerClass($request);
 
-            return call_user_func_array([$controller, $route["callable"][1]], array_values($identifiers));
+            return call_user_func_array([$controller, $route["callable"][1]], $identifiers);
         }
 
         if ($routeMatchedNotMethod) {
