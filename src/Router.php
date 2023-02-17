@@ -29,7 +29,7 @@ class Router implements RequestHandlerInterface {
     /**
      * @param $path string
      * @param $method string
-     * @param $callback Closure|array
+     * @param $callback callable|array
      * @param $name string|null
      */
     public function addRoute(string $path, string $method, $callback, string $name = null): void {
