@@ -21,7 +21,7 @@ class Message {
     }
 
     public function getHeaders(): Headers {
-        return $this->headers;
+        return clone $this->headers;
     }
 
     public function addHeader(string $header, $newValue): void {
