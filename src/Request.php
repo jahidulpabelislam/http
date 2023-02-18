@@ -94,6 +94,10 @@ class Request extends Message {
         $this->headers = clone $this->headers;
         $this->attributes = clone $this->attributes;
         $this->url = clone $this->url;
+
+        if ($this->bodyArray) {
+            $this->bodyArray = clone $this->bodyArray;
+        }
     }
 
     /**
