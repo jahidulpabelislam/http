@@ -130,9 +130,9 @@ class Router implements RequestHandlerInterface {
             $callbackParts = explode("::", $route["callback"]);
 
             $controllerClass = $callbackParts[0];
-            $controller = new $controllerClass($request);
+            $controller = new $controllerClass();
 
-            return call_user_func_array([$controller, $callbackParts[1]], $identifiers);
+            return $controller->{$callbackParts[1]}($request, ...$identifiers);
         }
 
         if ($routeMatchedNotMethod) {
