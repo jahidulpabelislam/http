@@ -191,7 +191,7 @@ class Request extends Message {
     }
 
     public function getURL(): URL {
-        return $this->url;
+        return clone $this->url;
     }
 
     public function setAttribute(string $attribute, $value): void {
