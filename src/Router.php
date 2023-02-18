@@ -32,7 +32,7 @@ class Router implements RequestHandlerInterface {
     /**
      * @param $path string
      * @param $method string
-     * @param $callback callable|array
+     * @param $callback callable|string
      * @param $name string|null
      */
     public function addRoute(string $path, string $method, $callback, string $name = null): void {
@@ -41,7 +41,7 @@ class Router implements RequestHandlerInterface {
         }
 
         $this->routes[$path][$method] = [
-            "callable" => $callback,
+            "callback" => $callback,
         ];
 
         if ($name) {
@@ -123,14 +123,16 @@ class Router implements RequestHandlerInterface {
 
             $identifiers = array_values($identifiers);
 
-            if (is_callable($route["callable"])) {
-                return $route["callable"]($request, ...$identifiers);
+            if (is_callable($route["callback"])) {
+                return $route["callback"]($request, ...$identifiers);
             }
 
-            $controllerClass = $route["callable"][0];
+            $callbackParts = explode("::", $route["callback"]);
+
+            $controllerClass = $callbackParts[0];
             $controller = new $controllerClass($request);
 
-            return call_user_func_array([$controller, $route["callable"][1]], $identifiers);
+            return call_user_func_array([$controller, $callbackParts[1]], $identifiers);
         }
 
         if ($routeMatchedNotMethod) {
