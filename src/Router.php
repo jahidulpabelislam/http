@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JPI\HTTP;
 
 use Exception;
+use JPI\Utils\URL;
 
 class Router implements RequestHandlerInterface {
 
@@ -60,6 +61,14 @@ class Router implements RequestHandlerInterface {
         }
 
         return $path;
+    }
+
+    public function makeURL(string $name, array $params): URL {
+        $path = $this->makePath($name, $params);
+
+        $url = $this->getRequest()->getURL();
+        $url->setPath($path);
+        return $url;
     }
 
     protected function getIdentifiersFromMatches(array $matches): array {
