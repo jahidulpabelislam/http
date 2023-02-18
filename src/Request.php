@@ -86,6 +86,16 @@ class Request extends Message {
         );
     }
 
+    public function __clone() {
+        $this->serverParams = clone $this->serverParams;
+        $this->cookies = clone $this->cookies;
+        $this->queryParams = clone $this->queryParams;
+        $this->postParams = clone $this->postParams;
+        $this->headers = clone $this->headers;
+        $this->attributes = clone $this->attributes;
+        $this->url = clone $this->url;
+    }
+
     /**
      * @param array $item
      * @return UploadedFile|array
