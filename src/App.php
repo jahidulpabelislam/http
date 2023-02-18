@@ -22,6 +22,14 @@ class App implements RequestHandlerInterface {
         return $this->router->getRequest();
     }
 
+    public function addRoute(string $path, string $method, $callback, string $name = null): void {
+        $this->router->addRoute($path, $method, $callback, $name);
+    }
+
+    public function addMiddleware(RequestMiddlewareInterface $middleware): void {
+        $this->middlewares[] = $middleware;
+    }
+
     public function handle(): Response {
         if (!count($this->middlewares)) {
             return $this->router->handle();
