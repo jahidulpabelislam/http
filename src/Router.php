@@ -126,8 +126,9 @@ class Router implements RequestHandlerInterface {
 
             $controllerClass = $callbackParts[0];
             $controller = new $controllerClass();
+            $controller->setRequest($request);
 
-            return $controller->{$callbackParts[1]}($request, ...$routeParams);
+            return $controller->{$callbackParts[1]}(...$routeParams);
         }
 
         if ($routeMatchedNotMethod) {
