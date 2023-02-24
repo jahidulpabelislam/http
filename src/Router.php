@@ -12,7 +12,14 @@ class Router implements RequestHandlerInterface {
     protected $notFoundHandler;
     protected $methodNotAllowedHandler;
 
+    /**
+     * @var Route[]
+     */
     protected $routes = [];
+
+    /**
+     * @var Route[]
+     */
     protected $namedRoutes = [];
 
     public function __construct(
@@ -30,22 +37,18 @@ class Router implements RequestHandlerInterface {
     }
 
     /**
-     * @param $path string
+     * @param $pattern string
      * @param $method string
      * @param $callback callable|string
      * @param $name string|null
      */
-    public function addRoute(string $path, string $method, $callback, string $name = null): void {
-        if (!isset($this->routes[$path])) {
-            $this->routes[$path] = [];
-        }
+    public function addRoute(string $pattern, string $method, $callback, string $name = null): void {
+        $route = new Route($pattern, $method, $callback, $name);
 
-        $this->routes[$path][$method] = [
-            "callback" => $callback,
-        ];
+        $this->routes[] = $route;
 
         if ($name) {
-            $this->namedRoutes[$name] = $path;
+            $this->namedRoutes[$name] = $route;
         }
     }
 
@@ -54,7 +57,7 @@ class Router implements RequestHandlerInterface {
             throw new Exception("Named route $name not defined");
         }
 
-        $path = $this->namedRoutes[$name];
+        $path = $this->namedRoutes[$name]->getPattern();
 
         foreach ($params as $identifier => $value) {
             $path = str_replace("/{{$identifier}}/", "/$value/", $path);
@@ -83,33 +86,26 @@ class Router implements RequestHandlerInterface {
         return $identifiers;
     }
 
-    protected function pathToRegex(string $path): string {
-        $regex = preg_replace("/\/{([A-Za-z]*?)}\//", "/(?<$1>[^/]*)/", $path);
-        $regex = str_replace("/", "\/", $regex);
-        return "/^{$regex}$/";
-    }
-
     public function handle(): Response {
         $request = $this->request;
 
         $url = $request->getURL();
-        $uri = $url->getPath();
+        $path = $url->getPath();
 
-        $method = $request->getMethod();
+        $requestMethod = $request->getMethod();
 
         $routeMatchedNotMethod = false;
 
-        foreach ($this->routes as $path => $routes) {
-            $pathRegex = $this->pathToRegex($path);
-            if (!preg_match($pathRegex, $uri, $matches)) {
+        foreach ($this->routes as $route) {
+            if (!preg_match($route->getRegex(), $path, $matches)) {
                 continue;
             }
 
-            if ($method === "OPTIONS") {
+            if ($requestMethod === "OPTIONS") {
                 return new Response(200);
             }
 
-            if (!isset($routes[$method])) {
+            if ($route->getMethod() !== $requestMethod) {
                 $routeMatchedNotMethod = true;
                 continue;
             }
@@ -119,15 +115,14 @@ class Router implements RequestHandlerInterface {
 
             $request->setAttribute("identifiers", $identifiers);
 
-            $route = $routes[$method];
-
             $identifiers = array_values($identifiers);
 
-            if (is_callable($route["callback"])) {
-                return $route["callback"]($request, ...$identifiers);
+            $callback = $route->getCallback();
+            if (is_callable($callback)) {
+                return $callback($request, ...$identifiers);
             }
 
-            $callbackParts = explode("::", $route["callback"]);
+            $callbackParts = explode("::", $callback);
 
             $controllerClass = $callbackParts[0];
             $controller = new $controllerClass();
