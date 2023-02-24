@@ -71,6 +71,8 @@ class Router implements RequestHandlerInterface {
 
         $url = $this->getRequest()->getURL();
         $url->setPath($path);
+        $url->setParams([]);
+        $url->setFragment("");
         return $url;
     }
 
