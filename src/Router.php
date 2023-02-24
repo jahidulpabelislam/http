@@ -59,8 +59,8 @@ class Router implements RequestHandlerInterface {
 
         $path = $this->namedRoutes[$name]->getPattern();
 
-        foreach ($params as $identifier => $value) {
-            $path = str_replace("/{{$identifier}}/", "/$value/", $path);
+        foreach ($params as $param => $value) {
+            $path = str_replace("/{{$param}}/", "/$value/", $path);
         }
 
         return $path;
@@ -74,16 +74,16 @@ class Router implements RequestHandlerInterface {
         return $url;
     }
 
-    protected function getIdentifiersFromMatches(array $matches): array {
-        $identifiers = [];
+    protected function getRouteParamsFromMatches(array $matches): array {
+        $params = [];
 
         foreach ($matches as $key => $match) {
             if (!is_numeric($key)) {
-                $identifiers[$key] = $match;
+                $params[$key] = $match;
             }
         }
 
-        return $identifiers;
+        return $params;
     }
 
     public function handle(): Response {
@@ -111,15 +111,15 @@ class Router implements RequestHandlerInterface {
             }
 
             array_shift($matches);
-            $identifiers = $this->getIdentifiersFromMatches($matches);
+            $routeParams = $this->getRouteParamsFromMatches($matches);
 
-            $request->setAttribute("identifiers", $identifiers);
+            $request->setAttribute("route_params", $routeParams);
 
-            $identifiers = array_values($identifiers);
+            $routeParams = array_values($routeParams);
 
             $callback = $route->getCallback();
             if (is_callable($callback)) {
-                return $callback($request, ...$identifiers);
+                return $callback($request, ...$routeParams);
             }
 
             $callbackParts = explode("::", $callback);
@@ -127,7 +127,7 @@ class Router implements RequestHandlerInterface {
             $controllerClass = $callbackParts[0];
             $controller = new $controllerClass();
 
-            return $controller->{$callbackParts[1]}($request, ...$identifiers);
+            return $controller->{$callbackParts[1]}($request, ...$routeParams);
         }
 
         if ($routeMatchedNotMethod) {
