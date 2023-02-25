@@ -66,8 +66,15 @@ class Request extends Message {
         $this->attributes = new Collection();
 
         $url = new URL($this->getServerParam("REQUEST_URI"));
-        $url->setScheme($this->getServerParam("HTTPS") !== "off" ? "https" : "http");
         $url->setHost($this->getServerParam("HTTP_HOST"));
+
+        $scheme = $this->getServerParam("REQUEST_SCHEME");
+
+        if (!$scheme) {
+            $scheme = $this->getServerParam("HTTPS") !== "off" ? "https" : "http";
+        }
+
+        $url->setScheme($scheme);
 
         $this->url = $url;
 
