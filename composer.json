@@ -8,9 +8,12 @@
             "email": "me@jahidulpabelislam.com"
         }
     ],
-    "keywords": ["http"],
+    "keywords": [
+        "http"
+    ],
     "require": {
         "php": "^7.4 || ^8.0",
+        "ext-json": "*",
         "jpi/utils": "^0.6"
     },
     "require-dev": {
