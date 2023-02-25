@@ -167,7 +167,7 @@ class Request extends Message {
     }
 
     public function setQueryParams(Input $params): void {
-        $this->queryParams =  $params;
+        $this->queryParams = $params;
     }
 
     public function getQueryParams(): Input {
