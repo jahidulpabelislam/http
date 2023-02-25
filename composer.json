@@ -11,7 +11,7 @@
     "keywords": ["http"],
     "require": {
         "php": "^7.4 || ^8.0",
-        "jpi/utils": "^0.5"
+        "jpi/utils": "^0.6"
     },
     "require-dev": {
         "jpi/codestyles": "^1.0.1"
