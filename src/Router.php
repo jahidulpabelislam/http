@@ -52,7 +52,7 @@ class Router implements RequestHandlerInterface {
         }
     }
 
-    public function makePath(string $name, array $params): string {
+    public function getPathForRoute(string $name, array $params): string {
         if (!isset($this->namedRoutes[$name])) {
             throw new Exception("Named route $name not defined");
         }
@@ -66,8 +66,8 @@ class Router implements RequestHandlerInterface {
         return $path;
     }
 
-    public function makeURL(string $name, array $params): URL {
-        $path = $this->makePath($name, $params);
+    public function getURLForRoute(string $name, array $params): URL {
+        $path = $this->getPathForRoute($name, $params);
 
         $url = $this->getRequest()->getURL();
         $url->setPath($path);
