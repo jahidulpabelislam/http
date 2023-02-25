@@ -11,15 +11,15 @@ class UploadedFile {
     protected $size;
     protected $mediaType;
 
-    protected $error;
+    protected $errorCode;
 
     protected $tempName;
 
-    public function __construct(string $filename, int $size, string $mediaType, string $error, string $tempName) {
+    public function __construct(string $filename, int $size, string $mediaType, int $errorCode, string $tempName) {
         $this->filename = $filename;
         $this->size = $size;
         $this->mediaType = $mediaType;
-        $this->error = $error;
+        $this->errorCode = $errorCode;
         $this->tempName = $tempName;
     }
 
@@ -31,8 +31,8 @@ class UploadedFile {
         return $this->size;
     }
 
-    public function getError(): string {
-        return $this->error;
+    public function getErrorCode(): int {
+        return $this->errorCode;
     }
 
     public function getFilename(): string {
