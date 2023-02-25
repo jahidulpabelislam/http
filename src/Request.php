@@ -216,4 +216,12 @@ class Request extends Message {
     public function getAttribute(string $attribute, $default = null) {
         return $this->attributes->get($attribute, $default);
     }
+
+    public function makeURL(string $path): URL {
+        $url = $this->getURL();
+        $url->setPath($path);
+        $url->setParams([]);
+        $url->setFragment("");
+        return $url;
+    }
 }

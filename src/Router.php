@@ -67,13 +67,9 @@ class Router implements RequestHandlerInterface {
     }
 
     public function getURLForRoute(string $name, array $params): URL {
-        $path = $this->getPathForRoute($name, $params);
-
-        $url = $this->getRequest()->getURL();
-        $url->setPath($path);
-        $url->setParams([]);
-        $url->setFragment("");
-        return $url;
+        return $this->getRequest()->makeURL(
+            $this->getPathForRoute($name, $params)
+        );
     }
 
     protected function getRouteParamsFromMatches(array $matches): array {
@@ -89,10 +85,9 @@ class Router implements RequestHandlerInterface {
     }
 
     public function handle(): Response {
-        $request = $this->request;
+        $request = $this->getRequest();
 
-        $url = $request->getURL();
-        $path = $url->getPath();
+        $path = $request->getURL()->getPath();
 
         $requestMethod = $request->getMethod();
 
