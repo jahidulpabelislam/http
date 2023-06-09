@@ -18,7 +18,7 @@ class Headers extends Collection {
         parent::__construct($items);
     }
 
-    public function set($header, $value): void {
+    public function set(string|int $header, $value): void {
         if (!is_array($value)) {
             $value = [$value];
         }

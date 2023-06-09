@@ -11,7 +11,7 @@ TODO
 
 ## Dependencies
 
-- PHP 7.1+
+- PHP 8.0+
 - Composer
 - [jpi/utils](https://packagist.org/packages/jpi/utils)
 
