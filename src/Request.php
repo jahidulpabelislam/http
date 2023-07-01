@@ -220,7 +220,7 @@ class Request extends Message {
     public function makeURL(string $path): URL {
         $url = $this->getURL();
         $url->setPath($path);
-        $url->setParams([]);
+        $url->setQueryParams([]);
         $url->setFragment("");
         return $url;
     }
