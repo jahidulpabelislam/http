@@ -12,6 +12,8 @@ class Router implements RequestHandlerInterface {
     protected $notFoundHandler;
     protected $methodNotAllowedHandler;
 
+    protected $request;
+
     /**
      * @var Route[]
      */
