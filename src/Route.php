@@ -6,20 +6,14 @@ namespace JPI\HTTP;
 
 class Route {
 
-    protected $pattern;
-    protected $regex = null;
+    protected ?string $regex = null;
 
-    protected $method;
-
-    protected $callback;
-
-    protected $name;
-
-    public function __construct(string $pattern, string $method, $callback, string $name = null) {
-        $this->pattern = $pattern;
-        $this->method = $method;
-        $this->callback = $callback;
-        $this->name = $name;
+    public function __construct(
+        protected string $pattern,
+        protected string $method,
+        protected $callback,
+        protected ?string $name = null
+    ) {
     }
 
     public function getPattern(): string {

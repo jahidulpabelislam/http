@@ -6,13 +6,10 @@ use JPI\Utils\Collection;
 
 class Input extends Collection {
 
-    protected $raw;
+    public function __construct(protected array $raw) {
+        parent::__construct([]);
 
-    public function __construct(array $input) {
-        $this->raw = $input;
-        $this->items = [];
-
-        foreach ($input as $key => $value) {
+        foreach ($raw as $key => $value) {
             if (is_array($value)) {
                 $this->set($key, new static($value));
             }
