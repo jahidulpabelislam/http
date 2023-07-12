@@ -6,23 +6,20 @@ namespace JPI\HTTP;
 
 class App implements RequestHandlerInterface {
 
-    protected $router;
-    protected $middlewares;
-
     /**
-     * @param Router $router
      * @param RequestMiddlewareInterface[] $middlewares
      */
-    public function __construct(Router $router, array $middlewares = []) {
-        $this->router = $router;
-        $this->middlewares = $middlewares;
+    public function __construct(
+        protected Router $router,
+        protected array $middlewares = []
+    ) {
     }
 
     public function getRequest(): Request {
         return $this->router->getRequest();
     }
 
-    public function addRoute(string $path, string $method, $callback, string $name = null): void {
+    public function addRoute(string $path, string $method, callable|string $callback, string $name = null): void {
         $this->router->addRoute($path, $method, $callback, $name);
     }
 

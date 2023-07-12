@@ -9,19 +9,15 @@ use DateTimeZone;
 
 class Response extends Message {
 
-    protected $statusCode;
-    protected $statusMessage = null;
+    protected ?string $statusMessage = null;
 
     public function __construct(
-        int $statusCode = 500,
-        string $body = "",
+        protected int $statusCode = 500,
+        protected string $body = "",
         array $headers = [],
-        float $protocolVersion = 1.1
+        protected float $protocolVersion = 1.1
     ) {
-        $this->body = $body;
-        $this->statusCode = $statusCode;
         $this->headers = new Headers($headers);
-        $this->protocolVersion = $protocolVersion;
     }
 
     public static function json(

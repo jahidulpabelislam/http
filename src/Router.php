@@ -12,24 +12,17 @@ class Router implements RequestHandlerInterface {
     protected $notFoundHandler;
     protected $methodNotAllowedHandler;
 
-    protected $request;
+    /** @var Route[] */
+    protected array $routes = [];
 
-    /**
-     * @var Route[]
-     */
-    protected $routes = [];
-
-    /**
-     * @var Route[]
-     */
-    protected $namedRoutes = [];
+    /** @var Route[] */
+    protected array $namedRoutes = [];
 
     public function __construct(
-        Request $request,
+        protected Request $request,
         callable $notFoundHandler,
         callable $methodNotAllowedHandler
     ) {
-        $this->request = $request;
         $this->notFoundHandler = $notFoundHandler;
         $this->methodNotAllowedHandler = $methodNotAllowedHandler;
     }
@@ -38,13 +31,7 @@ class Router implements RequestHandlerInterface {
         return $this->request;
     }
 
-    /**
-     * @param $pattern string
-     * @param $method string
-     * @param $callback callable|string
-     * @param $name string|null
-     */
-    public function addRoute(string $pattern, string $method, $callback, string $name = null): void {
+    public function addRoute(string $pattern, string $method, callable|string $callback, string $name = null): void {
         $route = new Route($pattern, $method, $callback, $name);
 
         $this->routes[] = $route;

@@ -6,7 +6,7 @@ namespace JPI\HTTP;
 
 trait RequestAwareTrait {
 
-    protected $request;
+    protected Request $request;
 
     public function setRequest(Request $request): void {
         $this->request = $request;

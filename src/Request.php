@@ -9,26 +9,27 @@ use JPI\Utils\URL;
 
 class Request extends Message {
 
-    protected $serverParams;
+    protected Collection $serverParams;
 
-    protected $cookies;
+    protected Collection $cookies;
 
-    protected $method;
+    protected string $method;
 
-    protected $path;
-    protected $pathParts;
+    protected string $path;
+    protected array $pathParts;
 
-    protected $queryParams;
+    protected Input $queryParams;
 
-    protected $postParams;
+    protected Input $postParams;
 
-    protected $files;
+    /** @var UploadedFile[] */
+    protected array $files;
 
-    protected $url;
+    protected URL $url;
 
-    protected $attributes;
+    protected Collection $attributes;
 
-    protected $bodyArray = null;
+    protected ?Input $bodyArray = null;
 
     public function __construct(
         array $serverParams,
@@ -107,12 +108,7 @@ class Request extends Message {
         }
     }
 
-    /**
-     * @param array $item
-     * @return UploadedFile|array
-     * @author Jahidul Islam <jahidul@d3r.com>
-     */
-    protected function normaliseFileItem(array $item) {
+    protected function normaliseFileItem(array $item): UploadedFile|array {
         if (!is_array($item["tmp_name"])) {
             return new UploadedFile(
                 $item["name"],
@@ -194,9 +190,6 @@ class Request extends Message {
         return clone $this->bodyArray;
     }
 
-    /**
-     * @return UploadedFile[]
-     */
     public function getFiles(): array {
         return $this->files;
     }

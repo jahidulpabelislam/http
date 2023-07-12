@@ -6,14 +6,14 @@ namespace JPI\HTTP;
 
 class Message {
 
-    protected $protocolVersion;
-    protected $headers;
-    protected $body;
+    protected Headers $headers;
 
-    public function __construct(array $headers = [], string $body = "", float $protocolVersion = 1.1) {
-        $this->protocolVersion = $protocolVersion;
+    public function __construct(
+        array $headers = [],
+        protected string $body = "",
+        protected float $protocolVersion = 1.1
+    ) {
         $this->headers = new Headers($headers);
-        $this->body = $body;
     }
 
     public function getProtocolVersion(): float {
