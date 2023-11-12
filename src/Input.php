@@ -16,7 +16,7 @@ class Input extends Collection {
                 $this->set($key, new static($value));
             }
             else {
-                $this->set($key, urldecode(stripslashes(trim($value))));
+                $this->set($key, urldecode(stripslashes(trim((string) $value))));
             }
         }
     }
