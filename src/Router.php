@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
-use Exception;
+use OutOfBoundsException;
 use JPI\Utils\URL;
 
 class Router implements RequestHandlerInterface {
@@ -43,7 +43,7 @@ class Router implements RequestHandlerInterface {
 
     public function getPathForRoute(string $name, array $params): string {
         if (!isset($this->namedRoutes[$name])) {
-            throw new Exception("Named route $name not defined");
+            throw new OutOfBoundsException("Named route $name not defined");
         }
 
         $path = $this->namedRoutes[$name]->getPattern();
