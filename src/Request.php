@@ -184,7 +184,7 @@ class Request extends Message {
 
     public function getArrayFromBody(): Input {
         if ($this->bodyArray === null) {
-            $this->bodyArray = new Input(json_decode($this->getBody(), true));
+            $this->bodyArray = new Input(json_decode($this->getBody(), true) ?: []);
         }
 
         return clone $this->bodyArray;
