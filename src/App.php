@@ -19,7 +19,7 @@ class App implements RequestHandlerInterface {
         return $this->router->getRequest();
     }
 
-    public function addRoute(string $path, string $method, callable|string $callback, string $name = null): void {
+    public function addRoute(string $path, string $method, callable|string $callback, ?string $name = null): void {
         $this->router->addRoute($path, $method, $callback, $name);
     }
 

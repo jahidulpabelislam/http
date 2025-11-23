@@ -31,7 +31,7 @@ class Router implements RequestHandlerInterface {
         return $this->request;
     }
 
-    public function addRoute(string $pattern, string $method, callable|string $callback, string $name = null): void {
+    public function addRoute(string $pattern, string $method, callable|string $callback, ?string $name = null): void {
         $route = new Route($pattern, $method, $callback, $name);
 
         $this->routes[] = $route;
