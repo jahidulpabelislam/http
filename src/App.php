@@ -12,6 +12,9 @@ namespace JPI\HTTP;
  */
 class App implements RequestHandlerInterface {
 
+    /**
+     * @param RequestMiddlewareInterface[] $middlewares
+     */
     public function __construct(
         protected Router $router,
         protected array $middlewares = []
