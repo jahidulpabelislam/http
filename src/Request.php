@@ -29,7 +29,7 @@ class Request extends Message {
 
     protected Input $postParams;
 
-    /** @var array<UploadedFile|array<UploadedFile>> */
+    /** @var array<string, UploadedFile|UploadedFile[]> */
     protected array $files;
 
     protected URL $url;
