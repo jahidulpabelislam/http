@@ -7,7 +7,9 @@
 [![License](https://poser.pugx.org/jpi/http/license)](https://packagist.org/packages/jpi/http)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jahidulpabelislam/http/1.x.svg?label=last%20activity)
 
-TODO
+A lightweight HTTP library for building web applications and APIs in PHP. It provides a simple routing system, request/response handling, and middleware support.
+
+This library has been kept very simple, following the KISS principle. It provides the core functionality needed to handle HTTP requests and responses without unnecessary complexity.
 
 ## Dependencies
 
@@ -23,6 +25,368 @@ Use [Composer](https://getcomposer.org/)
 $ composer require jpi/http 
 ```
 
+## Usage
+
+This library consists of several main components that work together to handle HTTP requests and responses:
+
+- **App**: The main application container that manages routing and middleware
+- **Router**: Handles route registration and matching
+- **Request**: Represents an HTTP request with access to parameters, headers, body, and files
+- **Response**: Represents an HTTP response with status codes, headers, and body content
+- **Route**: Defines a single route pattern with its handler
+- **Middleware**: Chain of processors that can modify requests/responses
+
+### Basic Setup
+
+To create a basic HTTP application, you'll need to instantiate the main components:
+
+```php
+use JPI\HTTP\App;
+use JPI\HTTP\Request;
+use JPI\HTTP\Response;
+use JPI\HTTP\Router;
+
+// Create a request from global variables
+$request = Request::fromGlobals();
+
+// Create router with 404 and 405 handlers
+$router = new Router(
+    $request,
+    fn($req) => new Response(404, "Not Found"),
+    fn($req) => new Response(405, "Method Not Allowed")
+);
+
+// Create the application
+$app = new App($router);
+```
+
+### Defining Routes
+
+Routes are defined using the `addRoute` method, which accepts a path pattern, HTTP method, callback, and optional name:
+
+```php
+// Simple GET route
+$app->addRoute("/", "GET", function(Request $request) {
+    return new Response(200, "Hello, World!");
+});
+
+// Route with parameters
+$app->addRoute("/users/{id}/", "GET", function(Request $request, string $id) {
+    return Response::json(200, ["user_id" => $id]);
+});
+
+// POST route for creating resources
+$app->addRoute("/users/", "POST", function(Request $request) {
+    $data = $request->getArrayFromBody();
+    // Process the data...
+    return Response::json(201, ["message" => "User created"]);
+});
+
+// Named route (useful for generating URLs)
+$app->addRoute("/profile/{username}/", "GET", function(Request $request, string $username) {
+    return Response::json(200, ["username" => $username]);
+}, "user.profile");
+```
+
+### Route Parameters
+
+Route parameters are defined using curly braces `{param}` and are passed as arguments to your route handler:
+
+```php
+$app->addRoute("/posts/{category}/{id}/", "GET", function(Request $request, string $category, string $id) {
+    return Response::json(200, [
+        "category" => $category,
+        "post_id" => $id
+    ]);
+});
+```
+
+### Using Controllers
+
+Instead of closures, you can use controller classes for better organisation:
+
+```php
+// Define your controller
+class UserController {
+    use \JPI\HTTP\RequestAwareTrait;
+    
+    public function show(string $id) {
+        // Access request via $this->request
+        return Response::json(200, ["id" => $id]);
+    }
+}
+
+// Register route with controller
+$app->addRoute("/users/{id}/", "GET", "UserController::show");
+```
+
+### Request Object
+
+The Request object provides access to all incoming request data:
+
+```php
+$app->addRoute("/search/", "GET", function(Request $request) {
+    // Query parameters
+    $query = $request->getQueryParam("q", "");
+    $page = $request->getQueryParam("page", "1");
+    
+    // Headers
+    $contentType = $request->getHeaderString("Content-Type");
+    
+    // Method and path
+    $method = $request->getMethod();
+    $path = $request->getPath();
+    
+    // URL information
+    $url = $request->getURL();
+    
+    // Cookies
+    $cookies = $request->getCookies();
+    
+    return Response::json(200, ["query" => $query, "page" => $page]);
+});
+
+$app->addRoute("/upload/", "POST", function(Request $request) {
+    // POST data
+    $postData = $request->getPostParams();
+    
+    // JSON body
+    $jsonData = $request->getArrayFromBody();
+    
+    // File uploads
+    $files = $request->getFiles();
+    
+    // Custom attributes (set by middleware or route handlers)
+    $userId = $request->getAttribute("user_id");
+    
+    return Response::json(200, ["received" => true]);
+});
+```
+
+### Response Object
+
+The Response object allows you to build HTTP responses:
+
+```php
+// Text response
+$response = new Response(200, "Hello, World!");
+
+// JSON response
+$response = Response::json(200, ["message" => "Success"]);
+
+// Fluent interface for building responses
+$response = (new Response())
+    ->withStatus(200)
+    ->withHeader("Content-Type", "text/html")
+    ->withBody("<h1>Hello</h1>");
+
+// Adding cache headers
+$response = Response::json(200, ["data" => "..."])
+    ->withCacheHeaders([
+        "Cache-Control" => "public, max-age=3600",
+        "Expires" => new \DateTime("+1 hour"),
+        "ETag" => true, // Automatically generated from body
+    ]);
+```
+
+### Middleware
+
+Middleware allows you to process requests before they reach your route handlers:
+
+```php
+// Create a middleware class
+class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
+    use \JPI\HTTP\RequestAwareTrait;
+    
+    public function run(\JPI\HTTP\RequestHandlerInterface $next): \JPI\HTTP\Response {
+        // Check authentication
+        $token = $this->request->getHeaderString("Authorization");
+        
+        if (!$token) {
+            return new \JPI\HTTP\Response(401, "Unauthorized");
+        }
+        
+        // Add user info to request
+        $this->request->setAttribute("user_id", 123);
+        
+        // Continue to next middleware or route handler
+        return $next->handle();
+    }
+}
+
+// Add middleware to the application
+$app->addMiddleware(new AuthMiddleware());
+```
+
+### Handling the Request
+
+Once routes and middleware are configured, handle the incoming request and send the response:
+
+```php
+$response = $app->handle();
+$response->send();
+```
+
+### Complete Example
+
+Here's a complete example putting it all together:
+
+```php
+<?php
+
+require_once "vendor/autoload.php";
+
+use JPI\HTTP\App;
+use JPI\HTTP\Request;
+use JPI\HTTP\Response;
+use JPI\HTTP\Router;
+
+// Create request from globals
+$request = Request::fromGlobals();
+
+// Create router with error handlers
+$router = new Router(
+    $request,
+    fn($req) => Response::json(404, ["error" => "Not Found"]),
+    fn($req) => Response::json(405, ["error" => "Method Not Allowed"])
+);
+
+// Create application
+$app = new App($router);
+
+// Define routes
+$app->addRoute("/", "GET", function(Request $request) {
+    return Response::json(200, ["message" => "Welcome to the API"]);
+});
+
+$app->addRoute("/users/", "GET", function(Request $request) {
+    $page = $request->getQueryParam("page", "1");
+    return Response::json(200, [
+        "users" => [],
+        "page" => (int)$page
+    ]);
+});
+
+$app->addRoute("/users/{id}/", "GET", function(Request $request, string $id) {
+    return Response::json(200, [
+        "id" => $id,
+        "name" => "Example User"
+    ]);
+});
+
+$app->addRoute("/users/", "POST", function(Request $request) {
+    $data = $request->getArrayFromBody();
+    // Process creation...
+    return Response::json(201, ["id" => "new-user-id"]);
+});
+
+// Handle request and send response
+$response = $app->handle();
+$response->send();
+```
+
+### Generating URLs for Named Routes
+
+If you've given routes names, you can generate URLs for them:
+
+```php
+// Register a named route
+$app->addRoute("/users/{id}/posts/{postId}/", "GET", "PostController::show", "user.post");
+
+// Generate path
+$path = $router->getPathForRoute("user.post", ["id" => "123", "postId" => "456"]);
+// Result: /users/123/posts/456/
+
+// Generate full URL
+$url = $router->getURLForRoute("user.post", ["id" => "123", "postId" => "456"]);
+// Result: \JPI\Utils\URL object with full URL
+```
+
+## API Reference
+
+### Classes
+
+#### App
+
+The main application class that manages routing and middleware.
+
+**Methods:**
+- `__construct(Router $router, array $middlewares = [])`: Create a new application
+- `getRequest(): Request`: Get the current request
+- `addRoute(string $path, string $method, callable|string $callback, ?string $name = null): void`: Register a route
+- `addMiddleware(RequestMiddlewareInterface $middleware): void`: Add middleware
+- `handle(): Response`: Process the request and return a response
+
+#### Router
+
+Handles route registration and matching.
+
+**Methods:**
+- `__construct(Request $request, callable $notFoundHandler, callable $methodNotAllowedHandler)`: Create a router
+- `getRequest(): Request`: Get the current request
+- `addRoute(string $pattern, string $method, callable|string $callback, ?string $name = null): void`: Register a route
+- `getPathForRoute(string $name, array $params): string`: Generate a path for a named route
+- `getURLForRoute(string $name, array $params): URL`: Generate a URL for a named route
+- `handle(): Response`: Match and execute the appropriate route
+
+#### Request
+
+Represents an HTTP request.
+
+**Static Methods:**
+- `fromGlobals(): Request`: Create a request from PHP globals ($_SERVER, $_GET, $_POST, etc.)
+
+**Methods:**
+- `getMethod(): string`: Get the HTTP method (GET, POST, etc.)
+- `getPath(): string`: Get the request path
+- `getPathParts(): array`: Get the path split into parts
+- `getPathPart(int $index): ?string`: Get a specific part of the path
+- `getQueryParams(): Input`: Get all query parameters
+- `getQueryParam(string $param, $default = null)`: Get a specific query parameter
+- `hasQueryParam(string $param): bool`: Check if a query parameter exists
+- `getPostParams(): Input`: Get all POST parameters
+- `getArrayFromBody(): Input`: Parse JSON body as array
+- `getFiles(): array`: Get uploaded files
+- `getCookies(): Collection`: Get cookies
+- `getServerParams(): Collection`: Get server parameters
+- `getServerParam(string $param, string $default = ""): string`: Get a specific server parameter
+- `getURL(): URL`: Get the full request URL
+- `setAttribute(string $attribute, $value): void`: Set a custom attribute
+- `getAttribute(string $attribute, $default = null)`: Get a custom attribute
+- `getAttributes(): Collection`: Get all custom attributes
+- `makeURL(string $path): URL`: Create a new URL based on the current request
+
+#### Response
+
+Represents an HTTP response.
+
+**Static Methods:**
+- `json(int $statusCode = 500, array $body = [], array $headers = [], float $protocolVersion = 1.1): Response`: Create a JSON response
+
+**Methods:**
+- `__construct(int $statusCode = 500, string $body = "", array $headers = [], float $protocolVersion = 1.1)`: Create a response
+- `setStatus(int $code, ?string $message = null): void`: Set the status code
+- `withStatus(int $code, ?string $message = null): Response`: Set status (fluent)
+- `getStatusCode(): int`: Get the status code
+- `getStatusMessage(): string`: Get the status message
+- `withJSON(array $body): Response`: Set JSON body (fluent)
+- `setCacheHeaders(array $headers): void`: Set cache headers
+- `withCacheHeaders(array $headers): Response`: Set cache headers (fluent)
+- `getETag(): string`: Get MD5 hash of body as ETag
+- `send(): void`: Send the response to the client
+
+#### UploadedFile
+
+Represents an uploaded file.
+
+**Methods:**
+- `getFilename(): string`: Get the original filename
+- `getSize(): int`: Get the file size in bytes
+- `getMediaType(): string`: Get the MIME type
+- `getErrorCode(): int`: Get the upload error code
+- `getTempName(): string`: Get the temporary file path
+- `saveTo(string $targetPath): bool`: Move the uploaded file to a target location
+
 ## Support
 
 If you found this library interesting or useful please spread the word about this library: share on your socials, star on GitHub, etc.
@@ -35,4 +399,4 @@ If you find any issues or have any feature requests, you can open a [issue](http
 
 ## License
 
-This module is licensed under the General Public License - see the [License](LICENSE.md) file for details
+This module is licensed under the General Public License - see the [License](LICENSE) file for details

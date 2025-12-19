@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+/**
+ * HTTP status codes and their standard messages.
+ *
+ * Provides a constant array mapping HTTP status codes to their textual descriptions.
+ */
 interface Status {
 
     /**

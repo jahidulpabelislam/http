@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+/**
+ * Represents an uploaded file.
+ *
+ * Provides information about an uploaded file and a method to save it
+ * to a target location using move_uploaded_file().
+ */
 class UploadedFile {
 
     public function __construct(
@@ -15,6 +21,11 @@ class UploadedFile {
     ) {
     }
 
+    /**
+     * Move the uploaded file to the specified target path.
+     *
+     * @return bool True on success, false on failure
+     */
     public function saveTo(string $targetPath): bool {
         return move_uploaded_file($this->tempName, $targetPath);
     }

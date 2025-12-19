@@ -7,6 +7,13 @@ namespace JPI\HTTP;
 use JPI\Utils\Collection;
 use JPI\Utils\URL;
 
+/**
+ * Represents an HTTP request.
+ *
+ * Provides access to all request data including query parameters, POST data,
+ * headers, cookies, uploaded files, and server variables. Supports parsing
+ * JSON request bodies and storing custom attributes.
+ */
 class Request extends Message {
 
     protected Collection $serverParams;
@@ -22,7 +29,6 @@ class Request extends Message {
 
     protected Input $postParams;
 
-    /** @var UploadedFile[] */
     protected array $files;
 
     protected URL $url;
@@ -31,6 +37,9 @@ class Request extends Message {
 
     protected ?Input $bodyArray = null;
 
+    /**
+     * @param array $files Uploaded files in $_FILES format
+     */
     public function __construct(
         array $serverParams,
         array $headers,
@@ -82,6 +91,12 @@ class Request extends Message {
         $this->protocolVersion = 1.1;
     }
 
+    /**
+     * Create a Request instance from PHP superglobals.
+     *
+     * Constructs a Request using $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES,
+     * and php://input for the request body.
+     */
     public static function fromGlobals(): Request {
         return new static(
             $_SERVER,
@@ -108,6 +123,13 @@ class Request extends Message {
         }
     }
 
+    /**
+     * Normalise uploaded file data into UploadedFile instances.
+     *
+     * Handles both single file uploads and array of files.
+     *
+     * @return UploadedFile|array<UploadedFile>
+     */
     protected function normaliseFileItem(array $item): UploadedFile|array {
         if (!is_array($item["tmp_name"])) {
             return new UploadedFile(
@@ -134,10 +156,16 @@ class Request extends Message {
         return $normalised;
     }
 
+    /**
+     * Get all server parameters as a cloned collection.
+     */
     public function getServerParams(): Collection {
         return clone $this->serverParams;
     }
 
+    /**
+     * Get a specific server parameter.
+     */
     public function getServerParam(string $param, string $default = ""): string {
         return $this->serverParams->get($param, $default);
     }
@@ -158,6 +186,9 @@ class Request extends Message {
         return $this->pathParts;
     }
 
+    /**
+     * Get a specific part of the request path by index.
+     */
     public function getPathPart(int $index): ?string {
         return $this->pathParts[$index] ?? null;
     }
@@ -166,6 +197,9 @@ class Request extends Message {
         $this->queryParams = $params;
     }
 
+    /**
+     * Get all query parameters as a cloned Input collection.
+     */
     public function getQueryParams(): Input {
         return clone $this->queryParams;
     }
@@ -182,6 +216,11 @@ class Request extends Message {
         return clone $this->postParams;
     }
 
+    /**
+     * Parse the JSON request body and return as an Input collection.
+     *
+     * The parsed result is cached for subsequent calls.
+     */
     public function getArrayFromBody(): Input {
         if ($this->bodyArray === null) {
             $this->bodyArray = new Input(json_decode($this->getBody(), true) ?: []);
@@ -190,6 +229,11 @@ class Request extends Message {
         return clone $this->bodyArray;
     }
 
+    /**
+     * Get uploaded files.
+     *
+     * @return array<UploadedFile|array<UploadedFile>>
+     */
     public function getFiles(): array {
         return $this->files;
     }
@@ -198,6 +242,11 @@ class Request extends Message {
         return clone $this->url;
     }
 
+    /**
+     * Set a custom attribute on the request.
+     *
+     * Useful for storing data between middleware and route handlers.
+     */
     public function setAttribute(string $attribute, $value): void {
         $this->attributes->set($attribute, $value);
     }
@@ -210,6 +259,12 @@ class Request extends Message {
         return $this->attributes->get($attribute, $default);
     }
 
+    /**
+     * Create a new URL based on this request with a different path.
+     *
+     * The returned URL uses the same scheme and host as the current request
+     * but with the specified path and no query parameters or fragment.
+     */
     public function makeURL(string $path): URL {
         $url = $this->getURL();
         $url->setPath($path);
