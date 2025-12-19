@@ -79,18 +79,12 @@ class Router implements RequestHandlerInterface {
         return $path;
     }
 
-    /**
-     * Generate a full URL for a named route.
-     */
     public function getURLForRoute(string $name, array $params): URL {
         return $this->getRequest()->makeURL(
             $this->getPathForRoute($name, $params)
         );
     }
 
-    /**
-     * Extract named parameters from regex matches.
-     */
     protected function getRouteParamsFromMatches(array $matches): array {
         $params = [];
 

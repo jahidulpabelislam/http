@@ -21,11 +21,6 @@ class UploadedFile {
     ) {
     }
 
-    /**
-     * Move the uploaded file to the specified target path.
-     *
-     * @return bool True on success, false on failure
-     */
     public function saveTo(string $targetPath): bool {
         return move_uploaded_file($this->tempName, $targetPath);
     }

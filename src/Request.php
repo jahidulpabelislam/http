@@ -157,16 +157,10 @@ class Request extends Message {
         return $normalised;
     }
 
-    /**
-     * Get all server parameters as a cloned collection.
-     */
     public function getServerParams(): Collection {
         return clone $this->serverParams;
     }
 
-    /**
-     * Get a specific server parameter.
-     */
     public function getServerParam(string $param, string $default = ""): string {
         return $this->serverParams->get($param, $default);
     }
@@ -187,9 +181,6 @@ class Request extends Message {
         return $this->pathParts;
     }
 
-    /**
-     * Get a specific part of the request path by index.
-     */
     public function getPathPart(int $index): ?string {
         return $this->pathParts[$index] ?? null;
     }
@@ -198,9 +189,6 @@ class Request extends Message {
         $this->queryParams = $params;
     }
 
-    /**
-     * Get all query parameters as a cloned Input collection.
-     */
     public function getQueryParams(): Input {
         return clone $this->queryParams;
     }
@@ -231,8 +219,6 @@ class Request extends Message {
     }
 
     /**
-     * Get uploaded files.
-     *
      * @return array<UploadedFile|array<UploadedFile>>
      */
     public function getFiles(): array {
@@ -243,11 +229,6 @@ class Request extends Message {
         return clone $this->url;
     }
 
-    /**
-     * Set a custom attribute on the request.
-     *
-     * Useful for storing data between middleware and route handlers.
-     */
     public function setAttribute(string $attribute, $value): void {
         $this->attributes->set($attribute, $value);
     }

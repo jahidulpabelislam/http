@@ -14,12 +14,6 @@ use JPI\Utils\Collection;
  */
 class Input extends Collection {
 
-    /**
-     * Construct Input collection from raw array data.
-     *
-     * Values are sanitised: URL-decoded, slashes stripped, and trimmed.
-     * Nested arrays are recursively processed as Input instances.
-     */
     public function __construct(protected array $raw) {
         parent::__construct([]);
 

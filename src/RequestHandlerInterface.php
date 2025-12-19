@@ -12,8 +12,5 @@ namespace JPI\HTTP;
  */
 interface RequestHandlerInterface {
 
-    /**
-     * Handle the request and return a response.
-     */
     public function handle(): Response;
 }

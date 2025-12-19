@@ -26,9 +26,6 @@ class Message {
         return $this->protocolVersion;
     }
 
-    /**
-     * Get all headers as a cloned collection.
-     */
     public function getHeaders(): Headers {
         return clone $this->headers;
     }
@@ -49,8 +46,6 @@ class Message {
     }
 
     /**
-     * Set or add a header value (fluent interface).
-     *
      * @param bool $add If true, adds to existing header; if false, replaces it
      */
     public function withHeader(string $header, $value, bool $add = false): Message {
@@ -75,11 +70,6 @@ class Message {
         return $this->headers->get($name, []);
     }
 
-    /**
-     * Get a header value as a string.
-     *
-     * Multiple values are joined with commas.
-     */
     public function getHeaderString(string $name): string {
         return implode(",", $this->getHeader($name));
     }
@@ -92,9 +82,6 @@ class Message {
         return $this->body;
     }
 
-    /**
-     * Set the body content (fluent interface).
-     */
     public function withBody(string $body): Message {
         $this->setBody($body);
         return $this;

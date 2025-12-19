@@ -64,25 +64,16 @@ class Response extends Message {
         }
     }
 
-    /**
-     * Set cache headers (fluent interface).
-     */
     public function withCacheHeaders(array $headers): Response {
         $this->setCacheHeaders($headers);
         return $this;
     }
 
-    /**
-     * Set the HTTP status code and optional message.
-     */
     public function setStatus(int $code, ?string $message = null): void {
         $this->statusCode = $code;
         $this->statusMessage = $message;
     }
 
-    /**
-     * Set the status code and message (fluent interface).
-     */
     public function withStatus(int $code, ?string $message = null): Response {
         $this->setStatus($code, $message);
         return $this;
@@ -105,25 +96,16 @@ class Response extends Message {
         return $this->statusMessage;
     }
 
-    /**
-     * Set the body as JSON and set appropriate Content-Type header (fluent interface).
-     */
     public function withJSON(array $body): Response {
         $this->body = json_encode($body);
         $this->setHeader("Content-Type", "application/json");
         return $this;
     }
 
-    /**
-     * Generate an ETag from the response body using MD5 hash.
-     */
     public function getETag(): string {
         return md5($this->getBody());
     }
 
-    /**
-     * Send all response headers to the client.
-     */
     protected function sendHeaders(): void {
         if (!is_null($this->body)) {
             foreach ($this->headers as $name => $value) {
@@ -138,9 +120,6 @@ class Response extends Message {
         header("HTTP/{$this->getProtocolVersion()} {$this->getStatusCode()} {$this->getStatusMessage()}");
     }
 
-    /**
-     * Send the complete response (headers and body) to the client.
-     */
     public function send(): void {
         $this->sendHeaders();
 

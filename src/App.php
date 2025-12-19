@@ -25,9 +25,6 @@ class App implements RequestHandlerInterface {
         return $this->router->getRequest();
     }
 
-    /**
-     * Register a new route with the router.
-     */
     public function addRoute(string $path, string $method, callable|string $callback, ?string $name = null): void {
         $this->router->addRoute($path, $method, $callback, $name);
     }
