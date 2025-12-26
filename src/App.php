@@ -29,11 +29,6 @@ class App implements RequestHandlerInterface {
         $this->router->addRoute($path, $method, $callback, $name);
     }
 
-    /**
-     * Add middleware to the application's middleware stack.
-     *
-     * Middleware are executed in the order they are added.
-     */
     public function addMiddleware(RequestMiddlewareInterface $middleware): void {
         $this->middlewares[] = $middleware;
     }

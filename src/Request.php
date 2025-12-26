@@ -38,9 +38,6 @@ class Request extends Message {
 
     protected ?Input $bodyArray = null;
 
-    /**
-     * @param array $files Uploaded files in $_FILES format
-     */
     public function __construct(
         array $serverParams,
         array $headers,
@@ -92,12 +89,6 @@ class Request extends Message {
         $this->protocolVersion = 1.1;
     }
 
-    /**
-     * Create a Request instance from PHP superglobals.
-     *
-     * Constructs a Request using $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES,
-     * and php://input for the request body.
-     */
     public static function fromGlobals(): Request {
         return new static(
             $_SERVER,

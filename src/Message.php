@@ -30,11 +30,6 @@ class Message {
         return clone $this->headers;
     }
 
-    /**
-     * Add a value to an existing header.
-     *
-     * If the header doesn't exist, it will be created with the value.
-     */
     public function addHeader(string $header, $newValue): void {
         $value = $this->getHeader($header);
         $value[] = $newValue;
