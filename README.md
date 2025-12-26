@@ -11,6 +11,17 @@ A lightweight HTTP library for building web applications and APIs in PHP. It pro
 
 This library has been kept very simple, following the KISS principle. It provides the core functionality needed to handle HTTP requests and responses without unnecessary complexity.
 
+## Features
+
+- **Routing**: Define routes with URL parameters using `{param}` syntax
+- **Middleware Support**: Process requests through a middleware chain before reaching route handlers
+- **Request Handling**: Access query parameters, POST data, JSON bodies, uploaded files, headers, and cookies
+- **Response Building**: Create text or JSON responses with fluent interface for headers and caching
+- **Named Routes**: Generate URLs for routes by name with parameters
+- **Controller Support**: Use controller classes or closures as route handlers
+- **HTTP Status Codes**: Built-in status code constants with standard messages
+- **File Uploads**: Handle single and multiple file uploads with simple API
+
 ## Dependencies
 
 - PHP 8.0+
