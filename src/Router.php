@@ -25,10 +25,6 @@ class Router implements RequestHandlerInterface {
     /** @var Route[] */
     protected array $namedRoutes = [];
 
-    /**
-     * @param callable $notFoundHandler Handler for 404 Not Found responses
-     * @param callable $methodNotAllowedHandler Handler for 405 Method Not Allowed responses
-     */
     public function __construct(
         protected Request $request,
         callable $notFoundHandler,
@@ -42,14 +38,6 @@ class Router implements RequestHandlerInterface {
         return $this->request;
     }
 
-    /**
-     * Register a new route.
-     *
-     * @param string $pattern Route pattern with parameters in {param} format
-     * @param string $method HTTP method (GET, POST, etc.)
-     * @param callable|string $callback Closure or "ControllerClass::method" string
-     * @param string|null $name Optional name for the route to enable URL generation
-     */
     public function addRoute(string $pattern, string $method, callable|string $callback, ?string $name = null): void {
         $route = new Route($pattern, $method, $callback, $name);
 
