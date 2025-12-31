@@ -26,7 +26,7 @@ This library has been kept very simple, following the KISS principle. It provide
 
 - PHP 8.0+
 - Composer
-- [jpi/utils](https://packagist.org/packages/jpi/utils) ^1.0
+- [jpi/utils](https://packagist.org/packages/jpi/utils) v1
 
 ## Installation
 
