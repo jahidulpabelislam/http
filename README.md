@@ -312,10 +312,6 @@ $url = $router->getURLForRoute("user.post", ["id" => "123", "postId" => "456"]);
 The main application class that manages routing and middleware.
 
 **Methods:**
-- `__construct(Router $router, array $middlewares = [])`: Create a new application
-- `getRequest(): Request`: Get the current request
-- `addRoute(string $path, string $method, callable|string $callback, ?string $name = null): void`: Register a route
-- `addMiddleware(RequestMiddlewareInterface $middleware): void`: Add middleware
 - `handle(): Response`: Process the request and return a response
 
 #### Router
@@ -323,11 +319,6 @@ The main application class that manages routing and middleware.
 Handles route registration and matching.
 
 **Methods:**
-- `__construct(Request $request, callable $notFoundHandler, callable $methodNotAllowedHandler)`: Create a router
-- `getRequest(): Request`: Get the current request
-- `addRoute(string $pattern, string $method, callable|string $callback, ?string $name = null): void`: Register a route
-- `getPathForRoute(string $name, array $params): string`: Generate a path for a named route
-- `getURLForRoute(string $name, array $params): URL`: Generate a URL for a named route
 - `handle(): Response`: Match and execute the appropriate route
 
 #### Request
