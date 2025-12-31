@@ -325,20 +325,12 @@ Handles route registration and matching.
 
 Represents an HTTP request.
 
-**Static Methods:**
-- `fromGlobals(): \JPI\HTTP\Request`: Create a request from PHP globals ($_SERVER, $_GET, $_POST, etc.)
-
 **Methods:**
 - `getMethod(): string`: Get the HTTP method (GET, POST, etc.)
 - `getPath(): string`: Get the request path
 - `getPathParts(): array`: Get the path split into parts
 - `getPathPart(int $index): ?string`: Get a specific part of the path
-- `getQueryParams(): \JPI\HTTP\Input`: Get all query parameters
-- `getQueryParam(string $param, $default = null)`: Get a specific query parameter
 - `hasQueryParam(string $param): bool`: Check if a query parameter exists
-- `getPostParams(): \JPI\HTTP\Input`: Get all POST parameters
-- `getArrayFromBody(): \JPI\HTTP\Input`: Parse JSON body as array
-- `getFiles(): array`: Get uploaded files
 - `getCookies(): \JPI\Utils\Collection`: Get cookies
 - `getServerParams(): \JPI\Utils\Collection`: Get server parameters
 - `getServerParam(string $param, string $default = ""): string`: Get a specific server parameter
@@ -352,20 +344,13 @@ Represents an HTTP request.
 
 Represents an HTTP response.
 
-**Static Methods:**
-- `json(int $statusCode = 500, array $body = [], array $headers = [], float $protocolVersion = 1.1): \JPI\HTTP\Response`: Create a JSON response
-
 **Methods:**
 - `__construct(int $statusCode = 500, string $body = "", array $headers = [], float $protocolVersion = 1.1)`: Create a response
 - `setStatus(int $code, ?string $message = null): void`: Set the status code
-- `withStatus(int $code, ?string $message = null): \JPI\HTTP\Response`: Set status (fluent)
 - `getStatusCode(): int`: Get the status code
 - `getStatusMessage(): string`: Get the status message
-- `withJSON(array $body): \JPI\HTTP\Response`: Set JSON body (fluent)
 - `setCacheHeaders(array $headers): void`: Set cache headers
-- `withCacheHeaders(array $headers): \JPI\HTTP\Response`: Set cache headers (fluent)
 - `getETag(): string`: Get MD5 hash of body as ETag
-- `send(): void`: Send the response to the client
 
 #### UploadedFile
 
