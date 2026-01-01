@@ -70,7 +70,7 @@ Represents an HTTP request. Extends Message.
 - `getPathPart(int $index): ?string`: Get a specific part of the path
 - `setQueryParams(\JPI\HTTP\Input $params): void`: Set query parameters
 - `getQueryParams(): \JPI\HTTP\Input`: Get all query parameters
-- `getQueryParam(string $param, $default = null)`: Get a specific query parameter
+- `getQueryParam(string $param, Input|string|null $default = null)`: Get a specific query parameter
 - `hasQueryParam(string $param): bool`: Check if a query parameter exists
 - `getPostParams(): \JPI\HTTP\Input`: Get all POST parameters
 - `getArrayFromBody(): \JPI\HTTP\Input`: Parse JSON body as array
@@ -79,8 +79,8 @@ Represents an HTTP request. Extends Message.
 - `getServerParams(): \JPI\Utils\Collection`: Get server parameters
 - `getServerParam(string $param, string $default = ""): string`: Get a specific server parameter
 - `getURL(): \JPI\Utils\URL`: Get the full request URL
-- `setAttribute(string $attribute, $value): void`: Set a custom attribute
-- `getAttribute(string $attribute, $default = null)`: Get a custom attribute
+- `setAttribute(string $attribute, mixed $value): void`: Set a custom attribute
+- `getAttribute(string $attribute, mixed $default = null): mixed`: Get a custom attribute
 - `getAttributes(): \JPI\Utils\Collection`: Get all custom attributes
 - `makeURL(string $path): \JPI\Utils\URL`: Create a new URL based on the current request
 
