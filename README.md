@@ -64,19 +64,24 @@ $app = new \JPI\HTTP\App($router);
 Routes are defined using the `addRoute` method, which accepts a path pattern, HTTP method, callback, and optional name:
 
 ```php
+// Simple GET route
 $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
     return new \JPI\HTTP\Response(200, "Hello, World!");
 });
 
+// Route with parameters
 $app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
     return \JPI\HTTP\Response::json(200, ["id" => $id]);
 });
 
+// POST route for creating resources
 $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
+    // Process the data...
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
 
+// Named route (useful for generating URLs)
 $app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug) {
     return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
 }, "post.show");
@@ -104,6 +109,7 @@ final class PostController {
     use \JPI\HTTP\RequestAwareTrait;
     
     public function show(string $id) {
+        // Access request via $this->request
         return \JPI\HTTP\Response::json(200, ["id" => $id]);
     }
 }
@@ -155,7 +161,7 @@ $response = (new \JPI\HTTP\Response())
 $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
     ->withCacheHeaders([
         "Cache-Control" => "public, max-age=3600",
-        "ETag" => true,
+        "ETag" => true, // Automatically generated from body
     ]);
 ```
 
@@ -219,19 +225,20 @@ $app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request) {
     $page = $request->getQueryParam("page", "1");
     return \JPI\HTTP\Response::json(200, [
         "posts" => [],
-        "page" => (int)$page
+        "page" => (int)$page,
     ]);
 });
 
 $app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
     return \JPI\HTTP\Response::json(200, [
         "id" => $id,
-        "title" => "Example Post"
+        "title" => "Example Post",
     ]);
 });
 
 $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
+    // Process creation...
     return \JPI\HTTP\Response::json(201, ["id" => "new-post-id"]);
 });
 
@@ -247,8 +254,10 @@ If you've given routes names, you can generate URLs for them:
 $app->addRoute("/posts/{category}/{id}/", "GET", "PostController::show", "post.show");
 
 $path = $router->getPathForRoute("post.show", ["category" => "tech", "id" => "456"]);
+// Result: /posts/tech/456/
 
 $url = $router->getURLForRoute("post.show", ["category" => "tech", "id" => "456"]);
+// Result: \JPI\Utils\URL object with full URL
 ```
 
 ## API Reference
