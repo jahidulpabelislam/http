@@ -113,9 +113,7 @@ $app->addRoute("/posts/{category}/{id}/", "GET", function (\JPI\HTTP\Request $re
 You can assign names to routes, which allows you to generate URLs for them later:
 
 ```php
-$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug): \JPI\HTTP\Response {
-    return new \JPI\HTTP\Response(200, "Post");
-}, "post.show");
+$app->addRoute("/posts/{slug}/", "GET", "PostController::show", "post.show");
 ```
 
 To generate URLs for named routes:
