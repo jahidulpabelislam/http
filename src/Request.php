@@ -188,7 +188,7 @@ class Request extends Message {
         return isset($this->queryParams[$param]);
     }
 
-    public function getQueryParam(string $param, $default = null) {
+    public function getQueryParam(string $param, Input|string|null $default = null): Input|string|null {
         return $this->queryParams->get($param, $default);
     }
 
@@ -220,7 +220,7 @@ class Request extends Message {
         return clone $this->url;
     }
 
-    public function setAttribute(string $attribute, $value): void {
+    public function setAttribute(string $attribute, mixed $value): void {
         $this->attributes->set($attribute, $value);
     }
 
@@ -228,7 +228,7 @@ class Request extends Message {
         return clone $this->attributes;
     }
 
-    public function getAttribute(string $attribute, $default = null) {
+    public function getAttribute(string $attribute, mixed $default = null): mixed {
         return $this->attributes->get($attribute, $default);
     }
 

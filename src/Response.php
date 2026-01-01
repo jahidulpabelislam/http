@@ -81,7 +81,7 @@ class Response extends Message {
      * If no custom message was set, returns the standard HTTP status message.
      */
     public function getStatusMessage(): string {
-        if (is_null($this->statusMessage)) {
+        if ($this->statusMessage === null) {
             $this->statusMessage = Status::MESSAGES[$this->getStatusCode()];
         }
 
@@ -99,7 +99,7 @@ class Response extends Message {
     }
 
     protected function sendHeaders(): void {
-        if (!is_null($this->body)) {
+        if ($this->body !== null) {
             foreach ($this->headers as $name => $value) {
                 if (is_array($value)) {
                     $value = implode(", ", $value);
