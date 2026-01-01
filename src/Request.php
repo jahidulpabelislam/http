@@ -198,7 +198,7 @@ class Request extends Message {
         return clone $this->url;
     }
 
-    public function setAttribute(string $attribute, $value): void {
+    public function setAttribute(string $attribute, mixed $value): void {
         $this->attributes->set($attribute, $value);
     }
 
