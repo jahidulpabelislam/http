@@ -45,7 +45,7 @@ class Response extends Message {
     /**
      * Set cache-related headers.
      *
-     * Automatically formats DateTime Expires headers and generates ETags when requested.
+     * Automatically generates ETags when requested.
      *
      * @param array $headers Array of cache headers (Cache-Control, ETag, etc.)
      */
