@@ -75,21 +75,21 @@ $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
 });
 
 // Route with parameters
-$app->addRoute("/users/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
-    return \JPI\HTTP\Response::json(200, ["user_id" => $id]);
+$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
+    return \JPI\HTTP\Response::json(200, ["post_id" => $id]);
 });
 
 // POST route for creating resources
-$app->addRoute("/users/", "POST", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
     // Process the data...
-    return \JPI\HTTP\Response::json(201, ["message" => "User created"]);
+    return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
 
 // Named route (useful for generating URLs)
-$app->addRoute("/profile/{username}/", "GET", function(\JPI\HTTP\Request $request, string $username) {
-    return \JPI\HTTP\Response::json(200, ["username" => $username]);
-}, "user.profile");
+$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug) {
+    return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
+}, "post.show");
 ```
 
 ### Route Parameters
@@ -111,7 +111,7 @@ Instead of closures, you can use controller classes for better organisation:
 
 ```php
 // Define your controller
-class UserController {
+class PostController {
     use \JPI\HTTP\RequestAwareTrait;
     
     public function show(string $id) {
@@ -121,7 +121,7 @@ class UserController {
 }
 
 // Register route with controller
-$app->addRoute("/users/{id}/", "GET", "UserController::show");
+$app->addRoute("/posts/{id}/", "GET", "PostController::show");
 ```
 
 ### Request Object
@@ -161,7 +161,7 @@ $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request) {
     $files = $request->getFiles();
     
     // Custom attributes (set by middleware or route handlers)
-    $userId = $request->getAttribute("user_id");
+    $authorId = $request->getAttribute("author_id");
     
     return \JPI\HTTP\Response::json(200, ["received" => true]);
 });
@@ -209,8 +209,8 @@ class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
             return new \JPI\HTTP\Response(401, "Unauthorized");
         }
         
-        // Add user info to request
-        $this->request->setAttribute("user_id", 123);
+        // Add author info to request
+        $this->request->setAttribute("author_id", 123);
         
         // Continue to next middleware or route handler
         return $next->handle();
@@ -257,25 +257,25 @@ $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
     return \JPI\HTTP\Response::json(200, ["message" => "Welcome to the API"]);
 });
 
-$app->addRoute("/users/", "GET", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request) {
     $page = $request->getQueryParam("page", "1");
     return \JPI\HTTP\Response::json(200, [
-        "users" => [],
+        "posts" => [],
         "page" => (int)$page
     ]);
 });
 
-$app->addRoute("/users/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
+$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
     return \JPI\HTTP\Response::json(200, [
         "id" => $id,
-        "name" => "Example User"
+        "title" => "Example Post"
     ]);
 });
 
-$app->addRoute("/users/", "POST", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
     // Process creation...
-    return \JPI\HTTP\Response::json(201, ["id" => "new-user-id"]);
+    return \JPI\HTTP\Response::json(201, ["id" => "new-post-id"]);
 });
 
 // Handle request and send response
@@ -289,14 +289,14 @@ If you've given routes names, you can generate URLs for them:
 
 ```php
 // Register a named route
-$app->addRoute("/users/{id}/posts/{postId}/", "GET", "PostController::show", "user.post");
+$app->addRoute("/posts/{category}/{id}/", "GET", "PostController::show", "post.show");
 
 // Generate path
-$path = $router->getPathForRoute("user.post", ["id" => "123", "postId" => "456"]);
-// Result: /users/123/posts/456/
+$path = $router->getPathForRoute("post.show", ["category" => "tech", "id" => "456"]);
+// Result: /posts/tech/456/
 
 // Generate full URL
-$url = $router->getURLForRoute("user.post", ["id" => "123", "postId" => "456"]);
+$url = $router->getURLForRoute("post.show", ["category" => "tech", "id" => "456"]);
 // Result: \JPI\Utils\URL object with full URL
 ```
 
