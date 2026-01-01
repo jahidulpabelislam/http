@@ -61,7 +61,7 @@ Represents an HTTP request. Extends Message.
 - `fromGlobals(): \JPI\HTTP\Request`: Create a request from PHP globals (`$_SERVER`, `$_GET`, `$_POST`, etc.)
 
 **Constructor:**
-- `__construct(string $method, string $path, array $queryParams = [], array $postParams = [], array $files = [], array $cookies = [], array $server = [], array $headers = [], string $body = "", float $protocolVersion = 1.1)`: Create a request
+- `__construct(array $serverParams, array $headers, array $queryParams, array $postParams, array $cookies = [], string $body = "", array $files = [])`: Create a request
 
 **Methods:**
 - `getMethod(): string`: Get the HTTP method (GET, POST, etc.)
