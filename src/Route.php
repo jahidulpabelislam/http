@@ -30,7 +30,7 @@ class Route {
         return $this->method;
     }
 
-    public function getCallback() {
+    public function getCallback(): callable|string {
         return $this->callback;
     }
 

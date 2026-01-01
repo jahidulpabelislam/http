@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+use Stringable;
+
 /**
  * Base class for HTTP messages (Request and Response).
  *
@@ -30,20 +32,20 @@ class Message {
         return clone $this->headers;
     }
 
-    public function addHeader(string $header, $newValue): void {
+    public function addHeader(string $header, Stringable|string $newValue): void {
         $value = $this->getHeader($header);
         $value[] = $newValue;
         $this->headers->set($header, $value);
     }
 
-    public function setHeader(string $header, $value): void {
+    public function setHeader(string $header, array|Stringable|string $value): void {
         $this->headers->set($header, $value);
     }
 
     /**
      * @param bool $add If true, adds to existing header; if false, replaces it
      */
-    public function withHeader(string $header, $value, bool $add = false): Message {
+    public function withHeader(string $header, array|Stringable|string $value, bool $add = false): Message {
         if ($add) {
             $this->addHeader($header, $value);
         }
