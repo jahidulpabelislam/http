@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
-use DateTime;
-use DateTimeZone;
-
 /**
  * Represents an HTTP response.
  *
