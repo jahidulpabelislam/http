@@ -76,7 +76,7 @@ $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
 
 // Route with parameters
 $app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
-    return \JPI\HTTP\Response::json(200, ["post_id" => $id]);
+    return \JPI\HTTP\Response::json(200, ["id" => $id]);
 });
 
 // POST route for creating resources
