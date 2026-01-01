@@ -133,39 +133,35 @@ $url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
 The Request object provides access to all incoming request data:
 
 ```php
-$app->addRoute("/posts/", ["GET", "POST"], function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
-    // Query parameters (returns string with default fallback)
-    $query = $request->getQueryParam("q", "");
-    
-    // POST form data (returns associative array)
-    $postData = $request->getPostParams();
-    
-    // JSON request body (returns parsed array)
-    $jsonData = $request->getArrayFromBody();
-    
-    // Uploaded files (returns array of UploadedFile objects)
-    $files = $request->getFiles();
-    
-    // Request headers (returns string or null)
-    $contentType = $request->getHeaderString("Content-Type");
-    
-    // HTTP method (returns string: GET, POST, etc.)
-    $method = $request->getMethod();
-    
-    // Request path (returns string)
-    $path = $request->getPath();
-    
-    // Full URL (returns \JPI\Utils\URL object)
-    $url = $request->getURL();
-    
-    // Cookies (returns associative array)
-    $cookies = $request->getCookies();
-    
-    // Custom attributes set by middleware (returns mixed)
-    $authorId = $request->getAttribute("author_id");
+// Query parameters (returns string with default fallback)
+$query = $request->getQueryParam("q", "");
 
-    ...
-});
+// POST form data (returns associative array)
+$postData = $request->getPostParams();
+
+// JSON request body (returns parsed array)
+$jsonData = $request->getArrayFromBody();
+
+// Uploaded files (returns array of UploadedFile objects)
+$files = $request->getFiles();
+
+// Request headers (returns string or null)
+$contentType = $request->getHeaderString("Content-Type");
+
+// HTTP method (returns string: GET, POST, etc.)
+$method = $request->getMethod();
+
+// Request path (returns string)
+$path = $request->getPath();
+
+// Full URL (returns \JPI\Utils\URL object)
+$url = $request->getURL();
+
+// Cookies (returns associative array)
+$cookies = $request->getCookies();
+
+// Custom attributes set by middleware (returns mixed)
+$foo = $request->getAttribute("foo");
 ```
 
 ### Response Object
