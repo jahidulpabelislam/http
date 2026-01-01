@@ -152,7 +152,7 @@ $response = (new \JPI\HTTP\Response())
 
 ### Middleware
 
-Middleware allows you to process requests before they reach your route handlers. You can add a middle using `addMiddleware` on the app or pass an array to the App constructor:
+Middleware allows you to process requests before they reach your route handlers. Your class will need to implement `\JPI\HTTP\RequestMiddlewareInterface`. You can add a middle using `addMiddleware` on the app or pass an array to the App constructor:
 
 ```php
 class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
