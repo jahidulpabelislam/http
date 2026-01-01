@@ -21,7 +21,7 @@ Handles route registration and matching.
 Represents an HTTP request.
 
 **Static Methods:**
-- `fromGlobals(): \JPI\HTTP\Request`: Create a request from PHP globals ($_SERVER, $_GET, $_POST, etc.)
+- `fromGlobals(): \JPI\HTTP\Request`: Create a request from PHP globals (`$_SERVER`, `$_GET`, `$_POST`, etc.)
 
 **Methods:**
 - `getMethod(): string`: Get the HTTP method (GET, POST, etc.)
