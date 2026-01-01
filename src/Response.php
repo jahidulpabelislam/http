@@ -113,7 +113,9 @@ class Response extends Message {
     }
 
     public function send(): void {
-        $this->sendHeaders();
+        if (!headers_sent()) {
+            $this->sendHeaders();
+        }
 
         echo $this->getBody();
     }
