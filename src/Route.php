@@ -46,7 +46,7 @@ class Route {
      */
     public function getRegex(): string {
         if ($this->regex === null) {
-            $regex = preg_replace("/\/{([A-Za-z]*?)}\//", "/(?<$1>[^/]*)/", $this->pattern);
+            $regex = preg_replace("/\/{([A-Za-z]+)}/", "/(?<$1>[^/]+)", $this->pattern);
             $regex = str_replace("/", "\/", $regex);
             $this->regex = "/^{$regex}$/";
         }
