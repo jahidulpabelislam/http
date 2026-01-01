@@ -52,8 +52,12 @@ $request = \JPI\HTTP\Request::fromGlobals();
 
 $router = new \JPI\HTTP\Router(
     $request,
-    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => new \JPI\HTTP\Response(404, "Not Found"),
-    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => new \JPI\HTTP\Response(405, "Method Not Allowed")
+    function (\JPI\HTTP\Request $request): \JPI\HTTP\Response {
+        return new \JPI\HTTP\Response(404, "Not Found");
+    },
+    function (\JPI\HTTP\Request $request): \JPI\HTTP\Response {
+        return new \JPI\HTTP\Response(405, "Method Not Allowed");
+    }
 );
 
 $app = new \JPI\HTTP\App($router);
@@ -65,15 +69,33 @@ Routes are defined using the `addRoute` method (either `App` & `Router`), which 
 
 ```php
 // Simple GET route
-$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
+$app->addRoute("/", "GET", function (\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     return new \JPI\HTTP\Response(200, "Hello, World!");
 });
 
 // POST route
-$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
+$app->addRoute("/posts/", "POST", function (\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     // Process the data...
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
+```
+
+### Using Controllers
+
+Instead of closures, you can use controller classes for better organisation:
+
+```php
+final class PostController {
+
+    use \JPI\HTTP\RequestAwareTrait;
+
+    public function show(string $id): \JPI\HTTP\Response {
+        // Access request via $this->getRequest()
+        return \JPI\HTTP\Response::json(200, ["id" => $id]);
+    }
+}
+
+$app->addRoute("/posts/{id}/", "GET", "PostController::show");
 ```
 
 ### Route Parameters
@@ -81,7 +103,7 @@ $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTT
 Route parameters are defined using curly braces `{param}` and are passed as arguments to your route handler:
 
 ```php
-$app->addRoute("/posts/{category}/{id}/", "GET", function(\JPI\HTTP\Request $request, string $category, string $id): \JPI\HTTP\Response {
+$app->addRoute("/posts/{category}/{id}/", "GET", function (\JPI\HTTP\Request $request, string $category, string $id): \JPI\HTTP\Response {
     return \JPI\HTTP\Response::json(200, [
         "category" => $category,
         "post_id" => $id,
@@ -107,24 +129,6 @@ $path = $router->getPathForRoute("post.show", ["slug" => "my-post"]);
 
 $url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
 // Result: \JPI\Utils\URL object with full URL
-```
-
-### Using Controllers
-
-Instead of closures, you can use controller classes for better organisation:
-
-```php
-final class PostController {
-
-    use \JPI\HTTP\RequestAwareTrait;
-
-    public function show(string $id): \JPI\HTTP\Response {
-        // Access request via $this->request
-        return \JPI\HTTP\Response::json(200, ["id" => $id]);
-    }
-}
-
-$app->addRoute("/posts/{id}/", "GET", "PostController::show");
 ```
 
 ### Request Object
