@@ -71,12 +71,9 @@ $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Respo
 
 // POST route
 $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
-    $data = $request->getArrayFromBody();
     // Process the data...
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
-
-
 ```
 
 ### Route Parameters
