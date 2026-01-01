@@ -89,13 +89,13 @@ final class PostController {
 
     use \JPI\HTTP\RequestAwareTrait;
 
-    public function show(string $id): \JPI\HTTP\Response {
+    public function index(): \JPI\HTTP\Response {
         // Access request via $this->getRequest()
-        return new \JPI\HTTP\Response(200, "Post");
+        return new \JPI\HTTP\Response(200, "Posts");
     }
 }
 
-$app->addRoute("/posts/{id}/", "GET", "PostController::show");
+$app->addRoute("/posts/", "GET", "PostController::index");
 ```
 
 ### Route Parameters
