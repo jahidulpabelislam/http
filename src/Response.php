@@ -50,11 +50,6 @@ class Response extends Message {
      * @param array $headers Array of cache headers (Cache-Control, Expires, ETag, etc.)
      */
     public function setCacheHeaders(array $headers): void {
-        if (isset($headers["Expires"]) && $headers["Expires"] instanceof DateTime) {
-            $headers["Expires"]->setTimezone(new DateTimeZone("Europe/London"));
-            $headers["Expires"] = $headers["Expires"]->format("D, d M Y H:i:s") . " GMT";
-        }
-
         if (isset($headers["ETag"]) && $headers["ETag"]) {
             $headers["ETag"] = $this->getETag();
         }
