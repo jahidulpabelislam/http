@@ -61,7 +61,7 @@ $app = new \JPI\HTTP\App($router);
 
 ### Defining Routes
 
-Routes are defined using the `addRoute` method, which accepts a path pattern, HTTP method, callback, and optional name:
+Routes are defined using the `addRoute` method (either `App` & `Router`), which accepts a path pattern, HTTP method, callback, and optional name:
 
 ```php
 // Simple GET route
