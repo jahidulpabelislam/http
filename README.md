@@ -7,7 +7,7 @@
 [![License](https://poser.pugx.org/jpi/http/license)](https://packagist.org/packages/jpi/http)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jahidulpabelislam/http/1.x.svg?label=last%20activity)
 
-A simple & lightweight HTTP library for building web applications and APIs in PHP.
+A simple & lightweight HTTP library providing components to build web applications and APIs in PHP.
 
 This library has been kept very simple, following the KISS principle.
 
