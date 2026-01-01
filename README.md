@@ -76,13 +76,13 @@ $app->addRoute("/", "GET", function (\JPI\HTTP\Request $request): \JPI\HTTP\Resp
 // POST route
 $app->addRoute("/posts/", "POST", function (\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     // Process the data...
-    return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
+    return new \JPI\HTTP\Response(201, "Post created");
 });
 ```
 
 ### Using Controllers
 
-Instead of closures, you can use controller classes for better organisation:
+Instead of closures, you can use classes for better organisation, format is `{class}::{method}` (method must be public):
 
 ```php
 final class PostController {
@@ -91,7 +91,7 @@ final class PostController {
 
     public function show(string $id): \JPI\HTTP\Response {
         // Access request via $this->getRequest()
-        return \JPI\HTTP\Response::json(200, ["id" => $id]);
+        return new \JPI\HTTP\Response(200, "Post");
     }
 }
 
@@ -104,10 +104,7 @@ Route parameters are defined using curly braces `{param}` and are passed as argu
 
 ```php
 $app->addRoute("/posts/{category}/{id}/", "GET", function (\JPI\HTTP\Request $request, string $category, string $id): \JPI\HTTP\Response {
-    return \JPI\HTTP\Response::json(200, [
-        "category" => $category,
-        "post_id" => $id,
-    ]);
+    return new \JPI\HTTP\Response(200, "Post");
 });
 ```
 
@@ -117,7 +114,7 @@ You can assign names to routes, which allows you to generate URLs for them later
 
 ```php
 $app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug): \JPI\HTTP\Response {
-    return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
+    return new \JPI\HTTP\Response(200, "Post");
 }, "post.show");
 ```
 
@@ -144,8 +141,7 @@ $app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTT
     $path = $request->getPath();
     $url = $request->getURL();
     $cookies = $request->getCookies();
-
-    return \JPI\HTTP\Response::json(200, ["query" => $query, "page" => $page]);
+    ... 
 });
 
 $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
@@ -154,7 +150,7 @@ $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request): \JPI\HT
     $files = $request->getFiles();
     $authorId = $request->getAttribute("author_id");
 
-    return \JPI\HTTP\Response::json(200, ["received" => true]);
+    ...
 });
 ```
 
@@ -171,9 +167,6 @@ $response = (new \JPI\HTTP\Response())
     ->withStatus(200)
     ->withHeader("Content-Type", "text/html")
     ->withBody("<h1>Hello</h1>")
-;
-
-$response = \JPI\HTTP\Response::json(200, ["data" => "..."])
     ->withCacheHeaders([
         "Cache-Control" => "public, max-age=3600",
         "ETag" => true, // Automatically generated from body
@@ -183,7 +176,7 @@ $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
 
 ### Middleware
 
-Middleware allows you to process requests before they reach your route handlers. You can add an array of middlewares to the `App`:
+Middleware allows you to process requests before they reach your route handlers. You can add a middle using `addMiddleware` on the app or pass an array to the App constructor:
 
 ```php
 class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
@@ -191,13 +184,15 @@ class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
     use \JPI\HTTP\RequestAwareTrait;
 
     public function run(\JPI\HTTP\RequestHandlerInterface $next): \JPI\HTTP\Response {
-        $token = $this->request->getHeaderString("Authorization");
+        $token = $this->getRequest()->getHeaderString("Authorization");
 
         if (!$token) {
             return new \JPI\HTTP\Response(401, "Unauthorized");
         }
 
-        $this->request->setAttribute("author_id", 123);
+        // Do authentication...
+
+        $this->getRequest()->setAttribute("user_id", 123);
 
         return $next->handle();
     }
@@ -206,7 +201,7 @@ class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
 $app->addMiddleware(new AuthMiddleware());
 
 // Or pass an array of middlewares to the App constructor
-$app = new \JPI\HTTP\App($router, [new AuthMiddleware(), new LoggingMiddleware()]);
+$app = new \JPI\HTTP\App($router, [new AuthMiddleware(), new AnotherMiddleware()]);
 ```
 
 ### Handling the Request
