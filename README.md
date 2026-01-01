@@ -117,7 +117,7 @@ Instead of closures, you can use controller classes for better organisation:
 final class PostController {
 
     use \JPI\HTTP\RequestAwareTrait;
-    
+
     public function show(string $id): \JPI\HTTP\Response {
         // Access request via $this->request
         return \JPI\HTTP\Response::json(200, ["id" => $id]);
@@ -140,7 +140,7 @@ $app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTT
     $path = $request->getPath();
     $url = $request->getURL();
     $cookies = $request->getCookies();
-    
+
     return \JPI\HTTP\Response::json(200, ["query" => $query, "page" => $page]);
 });
 
@@ -149,7 +149,7 @@ $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request): \JPI\HT
     $jsonData = $request->getArrayFromBody();
     $files = $request->getFiles();
     $authorId = $request->getAttribute("author_id");
-    
+
     return \JPI\HTTP\Response::json(200, ["received" => true]);
 });
 ```
@@ -179,21 +179,22 @@ $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
 
 ### Middleware
 
-Middleware allows you to process requests before they reach your route handlers. You can add a single middleware or an array of middlewares to the `App`:
+Middleware allows you to process requests before they reach your route handlers. You can add an array of middlewares to the `App`:
 
 ```php
 class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
+
     use \JPI\HTTP\RequestAwareTrait;
-    
+
     public function run(\JPI\HTTP\RequestHandlerInterface $next): \JPI\HTTP\Response {
         $token = $this->request->getHeaderString("Authorization");
-        
+
         if (!$token) {
             return new \JPI\HTTP\Response(401, "Unauthorized");
         }
-        
+
         $this->request->setAttribute("author_id", 123);
-        
+
         return $next->handle();
     }
 }
