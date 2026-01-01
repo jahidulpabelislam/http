@@ -190,7 +190,6 @@ $response = (new \JPI\HTTP\Response())
 $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
     ->withCacheHeaders([
         "Cache-Control" => "public, max-age=3600",
-        "Expires" => new \DateTime("+1 hour"),
         "ETag" => true, // Automatically generated from body
     ]);
 ```
