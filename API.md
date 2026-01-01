@@ -1,5 +1,9 @@
 # API Reference
 
+`Headers` & `Input` classes work like a normal array just with some extra methods, see https://github.com/jahidulpabelislam/utils?tab=readme-ov-file#collection for more details.
+
+See https://github.com/jahidulpabelislam/utils?tab=readme-ov-file#url for more details on the `URL` class.
+
 ## Classes
 
 ### App
@@ -27,7 +31,6 @@ Handles route registration and matching.
 - `addRoute(string $pattern, string $method, callable|string $callback, ?string $name = null): void`: Register a route
 - `getPathForRoute(string $name, array $params): string`: Generate a path for a named route
 - `getURLForRoute(string $name, array $params): \JPI\Utils\URL`: Generate a full URL for a named route
-- `handle(): \JPI\HTTP\Response`: Match and execute the appropriate route
 
 ### Message
 
@@ -83,7 +86,7 @@ Represents an HTTP request. Extends Message.
 
 ### Response
 
-Represents an HTTP response. Extends Message.
+Represents an HTTP response. Extends `Message`.
 
 **Static Methods:**
 - `json(int $statusCode = 500, array $body = [], array $headers = [], float $protocolVersion = 1.1): \JPI\HTTP\Response`: Create a JSON response
@@ -99,29 +102,12 @@ Represents an HTTP response. Extends Message.
 - `withJSON(array $body): \JPI\HTTP\Response`: Set JSON body (fluent)
 - `setCacheHeaders(array $headers): void`: Set cache headers
 - `withCacheHeaders(array $headers): \JPI\HTTP\Response`: Set cache headers (fluent)
-- `getETag(): string`: Get MD5 hash of body as ETag
+- `getETag(): string`: Get MD5 hash of body as `ETag`
 - `send(): void`: Send the response to the client
-
-### Route
-
-Represents a registered route.
-
-**Constructor:**
-- `__construct(string $pattern, string $method, callable|string $callback, ?string $name = null)`: Create a route
-
-**Methods:**
-- `getPattern(): string`: Get the route pattern
-- `getMethod(): string`: Get the HTTP method
-- `getCallback(): callable|string`: Get the callback
-- `getName(): ?string`: Get the route name
-- `getRegex(): string`: Get the regex pattern for matching
 
 ### UploadedFile
 
 Represents an uploaded file.
-
-**Constructor:**
-- `__construct(string $filename, int $size, string $mediaType, int $errorCode, string $tmpName)`: Create an uploaded file instance
 
 **Methods:**
 - `getFilename(): string`: Get the original filename
@@ -130,52 +116,3 @@ Represents an uploaded file.
 - `getErrorCode(): int`: Get the upload error code
 - `getTempName(): string`: Get the temporary file path
 - `saveTo(string $targetPath): bool`: Move the uploaded file to a target location
-
-### Headers
-
-Collection class for HTTP headers. Extends `\JPI\Utils\Collection`.
-
-**Constructor:**
-- `__construct(array $items = [])`: Create a headers collection
-
-**Methods:**
-- `set(string|int $header, $value): void`: Set a header value (normalises header names)
-- Inherits all methods from `\JPI\Utils\Collection`
-
-### Input
-
-Read-only collection for request input data. Extends `\JPI\Utils\Collection`.
-
-**Constructor:**
-- `__construct(array $raw)`: Create an input collection
-
-**Methods:**
-- Inherits all methods from `\JPI\Utils\Collection` (read-only)
-
-## Interfaces
-
-### RequestHandlerInterface
-
-Interface for request handlers.
-
-**Methods:**
-- `handle(): \JPI\HTTP\Response`: Handle the request and return a response
-
-### RequestMiddlewareInterface
-
-Interface for middleware classes.
-
-**Methods:**
-- `setRequest(\JPI\HTTP\Request $request): void`: Set the request
-- `getRequest(): \JPI\HTTP\Request`: Get the request
-- `run(\JPI\HTTP\RequestHandlerInterface $next): \JPI\HTTP\Response`: Execute the middleware
-
-## Traits
-
-### RequestAwareTrait
-
-Trait that implements RequestMiddlewareInterface's request getter/setter methods.
-
-**Methods:**
-- `setRequest(\JPI\HTTP\Request $request): void`: Set the request
-- `getRequest(): \JPI\HTTP\Request`: Get the request
