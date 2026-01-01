@@ -13,10 +13,10 @@ This library has been kept very simple, following the KISS principle.
 
 ## Features
 
-- **Routing**: Define routes with URL parameters using `{param}` syntax, generate URLs for named routes
+- **Routing**: Define routes with parameters, generate URLs for named routes
 - **Middleware Support**: Process requests through a middleware chain before reaching route handlers
 - **Request Handling**: Access query parameters, POST data, JSON bodies, uploaded files, headers, and cookies
-- **Response Building**: Create text or JSON responses with fluent interface for headers and caching
+- **Response Building**: Fluent interface to create text or JSON responses
 - **Controller Support**: Use controller classes or closures as route handlers
 - **File Uploads**: Handle single and multiple file uploads with simple API
 
@@ -50,17 +50,14 @@ This library consists of several main components that work together to handle HT
 To create a basic HTTP application, you'll need to instantiate the main components:
 
 ```php
-// Create a request from global variables
 $request = \JPI\HTTP\Request::fromGlobals();
 
-// Create router with 404 and 405 handlers
 $router = new \JPI\HTTP\Router(
     $request,
-    fn($req) => new \JPI\HTTP\Response(404, "Not Found"),
-    fn($req) => new \JPI\HTTP\Response(405, "Method Not Allowed")
+    fn(\JPI\HTTP\Request $request) => new \JPI\HTTP\Response(404, "Not Found"),
+    fn(\JPI\HTTP\Request $request) => new \JPI\HTTP\Response(405, "Method Not Allowed")
 );
 
-// Create the application
 $app = new \JPI\HTTP\App($router);
 ```
 
@@ -69,24 +66,19 @@ $app = new \JPI\HTTP\App($router);
 Routes are defined using the `addRoute` method, which accepts a path pattern, HTTP method, callback, and optional name:
 
 ```php
-// Simple GET route
 $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
     return new \JPI\HTTP\Response(200, "Hello, World!");
 });
 
-// Route with parameters
 $app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
     return \JPI\HTTP\Response::json(200, ["id" => $id]);
 });
 
-// POST route for creating resources
 $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
-    // Process the data...
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
 
-// Named route (useful for generating URLs)
 $app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug) {
     return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
 }, "post.show");
@@ -110,17 +102,14 @@ $app->addRoute("/posts/{category}/{id}/", "GET", function(\JPI\HTTP\Request $req
 Instead of closures, you can use controller classes for better organisation:
 
 ```php
-// Define your controller
 final class PostController {
     use \JPI\HTTP\RequestAwareTrait;
     
     public function show(string $id) {
-        // Access request via $this->request
         return \JPI\HTTP\Response::json(200, ["id" => $id]);
     }
 }
 
-// Register route with controller
 $app->addRoute("/posts/{id}/", "GET", "PostController::show");
 ```
 
@@ -130,37 +119,21 @@ The Request object provides access to all incoming request data:
 
 ```php
 $app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request) {
-    // Query parameters
     $query = $request->getQueryParam("q", "");
     $page = $request->getQueryParam("page", "1");
-    
-    // Headers
     $contentType = $request->getHeaderString("Content-Type");
-    
-    // Method and path
     $method = $request->getMethod();
     $path = $request->getPath();
-    
-    // URL information
     $url = $request->getURL();
-    
-    // Cookies
     $cookies = $request->getCookies();
     
     return \JPI\HTTP\Response::json(200, ["query" => $query, "page" => $page]);
 });
 
 $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request) {
-    // POST data
     $postData = $request->getPostParams();
-    
-    // JSON body
     $jsonData = $request->getArrayFromBody();
-    
-    // File uploads
     $files = $request->getFiles();
-    
-    // Custom attributes (set by middleware or route handlers)
     $authorId = $request->getAttribute("author_id");
     
     return \JPI\HTTP\Response::json(200, ["received" => true]);
@@ -172,23 +145,19 @@ $app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request) {
 The Response object allows you to build HTTP responses:
 
 ```php
-// Text response
 $response = new \JPI\HTTP\Response(200, "Hello, World!");
 
-// JSON response
 $response = \JPI\HTTP\Response::json(200, ["message" => "Success"]);
 
-// Fluent interface for building responses
 $response = (new \JPI\HTTP\Response())
     ->withStatus(200)
     ->withHeader("Content-Type", "text/html")
     ->withBody("<h1>Hello</h1>");
 
-// Adding cache headers
 $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
     ->withCacheHeaders([
         "Cache-Control" => "public, max-age=3600",
-        "ETag" => true, // Automatically generated from body
+        "ETag" => true,
     ]);
 ```
 
@@ -197,27 +166,22 @@ $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
 Middleware allows you to process requests before they reach your route handlers:
 
 ```php
-// Create a middleware class
 class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
     use \JPI\HTTP\RequestAwareTrait;
     
     public function run(\JPI\HTTP\RequestHandlerInterface $next): \JPI\HTTP\Response {
-        // Check authentication
         $token = $this->request->getHeaderString("Authorization");
         
         if (!$token) {
             return new \JPI\HTTP\Response(401, "Unauthorized");
         }
         
-        // Add author info to request
         $this->request->setAttribute("author_id", 123);
         
-        // Continue to next middleware or route handler
         return $next->handle();
     }
 }
 
-// Add middleware to the application
 $app->addMiddleware(new AuthMiddleware());
 ```
 
@@ -239,20 +203,16 @@ Here's a complete example putting it all together:
 
 require_once "vendor/autoload.php";
 
-// Create request from globals
 $request = \JPI\HTTP\Request::fromGlobals();
 
-// Create router with error handlers
 $router = new \JPI\HTTP\Router(
     $request,
-    fn($req) => \JPI\HTTP\Response::json(404, ["error" => "Not Found"]),
-    fn($req) => \JPI\HTTP\Response::json(405, ["error" => "Method Not Allowed"])
+    fn(\JPI\HTTP\Request $request) => \JPI\HTTP\Response::json(404, ["error" => "Not Found"]),
+    fn(\JPI\HTTP\Request $request) => \JPI\HTTP\Response::json(405, ["error" => "Method Not Allowed"])
 );
 
-// Create application
 $app = new \JPI\HTTP\App($router);
 
-// Define routes
 $app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
     return \JPI\HTTP\Response::json(200, ["message" => "Welcome to the API"]);
 });
@@ -274,11 +234,9 @@ $app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, strin
 
 $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
     $data = $request->getArrayFromBody();
-    // Process creation...
     return \JPI\HTTP\Response::json(201, ["id" => "new-post-id"]);
 });
 
-// Handle request and send response
 $response = $app->handle();
 $response->send();
 ```
@@ -288,16 +246,11 @@ $response->send();
 If you've given routes names, you can generate URLs for them:
 
 ```php
-// Register a named route
 $app->addRoute("/posts/{category}/{id}/", "GET", "PostController::show", "post.show");
 
-// Generate path
 $path = $router->getPathForRoute("post.show", ["category" => "tech", "id" => "456"]);
-// Result: /posts/tech/456/
 
-// Generate full URL
 $url = $router->getURLForRoute("post.show", ["category" => "tech", "id" => "456"]);
-// Result: \JPI\Utils\URL object with full URL
 ```
 
 ## API Reference
