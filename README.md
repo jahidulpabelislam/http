@@ -128,7 +128,7 @@ $url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
 
 ### Request Object
 
-The Request object provides access to all incoming request data, see [API Reference](API.md) for full details.
+The Request object provides access to all incoming request data, see [API Reference](docs/API.md) for full details.
 
 ### Response Object
 
@@ -191,7 +191,7 @@ $response->send();
 
 ## API Reference
 
-For a complete list of classes and methods, see the [API Reference](API.md).
+For a complete list of classes and methods, see the [API Reference](docs/API.md).
 
 ## Support
 
