@@ -92,7 +92,7 @@ class Request extends Message {
     public static function fromGlobals(): Request {
         return new static(
             $_SERVER,
-            apache_request_headers(),
+            function_exists("apache_request_headers") ? apache_request_headers() : [],
             $_GET,
             $_POST,
             $_COOKIE,
