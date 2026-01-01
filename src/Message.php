@@ -24,17 +24,17 @@ class Message {
         return clone $this->headers;
     }
 
-    public function addHeader(string $header, $newValue): void {
+    public function addHeader(string $header, string $newValue): void {
         $value = $this->getHeader($header);
         $value[] = $newValue;
         $this->headers->set($header, $value);
     }
 
-    public function setHeader(string $header, $value): void {
+    public function setHeader(string $header, array|string $value): void {
         $this->headers->set($header, $value);
     }
 
-    public function withHeader(string $header, $value, bool $add = false): Message {
+    public function withHeader(string $header, array|string $value, bool $add = false): Message {
         if ($add) {
             $this->addHeader($header, $value);
         }
