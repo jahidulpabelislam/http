@@ -13,12 +13,10 @@ This library has been kept very simple, following the KISS principle.
 
 ## Features
 
-- **Routing**: Define routes with parameters, generate URLs for named routes
-- **Middleware Support**: Process requests through a middleware chain before reaching route handlers
+- **Routing**: Define routes with parameters, use controller classes or closures as handlers, generate URLs for named routes
+- **Middleware Support**: Process requests through a middleware chain
 - **Request Handling**: Access query parameters, POST data, JSON bodies, uploaded files, headers, and cookies
 - **Response Building**: Fluent interface to create text or JSON responses
-- **Controller Support**: Use controller classes or closures as route handlers
-- **File Uploads**: Handle single and multiple file uploads with simple API
 
 ## Dependencies
 
