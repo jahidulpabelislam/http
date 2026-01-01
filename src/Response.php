@@ -47,7 +47,7 @@ class Response extends Message {
      *
      * Automatically formats DateTime Expires headers and generates ETags when requested.
      *
-     * @param array $headers Array of cache headers (Cache-Control, Expires, ETag, etc.)
+     * @param array $headers Array of cache headers (Cache-Control, ETag, etc.)
      */
     public function setCacheHeaders(array $headers): void {
         if (isset($headers["ETag"]) && $headers["ETag"]) {
