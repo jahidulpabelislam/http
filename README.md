@@ -197,51 +197,6 @@ $response = $app->handle();
 $response->send();
 ```
 
-### Complete Example
-
-Here's a complete example putting it all together:
-
-```php
-<?php
-$request = \JPI\HTTP\Request::fromGlobals();
-
-$router = new \JPI\HTTP\Router(
-    $request,
-    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => \JPI\HTTP\Response::json(404, ["error" => "Not Found"]),
-    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => \JPI\HTTP\Response::json(405, ["error" => "Method Not Allowed"])
-);
-
-$app = new \JPI\HTTP\App($router);
-
-$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
-    return \JPI\HTTP\Response::json(200, ["message" => "Welcome to the API"]);
-});
-
-$app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
-    $page = $request->getQueryParam("page", "1");
-    return \JPI\HTTP\Response::json(200, [
-        "posts" => [],
-        "page" => (int)$page,
-    ]);
-});
-
-$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id): \JPI\HTTP\Response {
-    return \JPI\HTTP\Response::json(200, [
-        "id" => $id,
-        "title" => "Example Post",
-    ]);
-});
-
-$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
-    $data = $request->getArrayFromBody();
-    // Process creation...
-    return \JPI\HTTP\Response::json(201, ["id" => "new-post-id"]);
-});
-
-$response = $app->handle();
-$response->send();
-```
-
 ### Generating URLs for Named Routes
 
 If you've given routes names, you can generate URLs for them:
