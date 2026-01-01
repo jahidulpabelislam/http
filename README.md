@@ -52,8 +52,8 @@ $request = \JPI\HTTP\Request::fromGlobals();
 
 $router = new \JPI\HTTP\Router(
     $request,
-    fn(\JPI\HTTP\Request $request) => new \JPI\HTTP\Response(404, "Not Found"),
-    fn(\JPI\HTTP\Request $request) => new \JPI\HTTP\Response(405, "Method Not Allowed")
+    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => new \JPI\HTTP\Response(404, "Not Found"),
+    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => new \JPI\HTTP\Response(405, "Method Not Allowed")
 );
 
 $app = new \JPI\HTTP\App($router);
@@ -65,25 +65,21 @@ Routes are defined using the `addRoute` method (either `App` & `Router`), which 
 
 ```php
 // Simple GET route
-$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     return new \JPI\HTTP\Response(200, "Hello, World!");
 });
 
-// Route with parameters
-$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
-    return \JPI\HTTP\Response::json(200, ["id" => $id]);
-});
-
-// POST route for creating resources
-$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
+// POST route
+$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     $data = $request->getArrayFromBody();
     // Process the data...
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
 
 // Named route (useful for generating URLs)
-$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug) {
-    return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
+$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug): \JPI\HTTP\Response {
+    // Get the post...
+    return \JPI\HTTP\Response::json(200, ["id" => $id, "title" => "Example Post"]);
 }, "post.show");
 ```
 
@@ -92,10 +88,10 @@ $app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, str
 Route parameters are defined using curly braces `{param}` and are passed as arguments to your route handler:
 
 ```php
-$app->addRoute("/posts/{category}/{id}/", "GET", function(\JPI\HTTP\Request $request, string $category, string $id) {
+$app->addRoute("/posts/{category}/{id}/", "GET", function(\JPI\HTTP\Request $request, string $category, string $id): \JPI\HTTP\Response {
     return \JPI\HTTP\Response::json(200, [
         "category" => $category,
-        "post_id" => $id
+        "post_id" => $id,
     ]);
 });
 ```
@@ -106,9 +102,10 @@ Instead of closures, you can use controller classes for better organisation:
 
 ```php
 final class PostController {
+
     use \JPI\HTTP\RequestAwareTrait;
     
-    public function show(string $id) {
+    public function show(string $id): \JPI\HTTP\Response {
         // Access request via $this->request
         return \JPI\HTTP\Response::json(200, ["id" => $id]);
     }
@@ -122,7 +119,7 @@ $app->addRoute("/posts/{id}/", "GET", "PostController::show");
 The Request object provides access to all incoming request data:
 
 ```php
-$app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     $query = $request->getQueryParam("q", "");
     $page = $request->getQueryParam("page", "1");
     $contentType = $request->getHeaderString("Content-Type");
@@ -134,7 +131,7 @@ $app->addRoute("/search/", "GET", function(\JPI\HTTP\Request $request) {
     return \JPI\HTTP\Response::json(200, ["query" => $query, "page" => $page]);
 });
 
-$app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/upload/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     $postData = $request->getPostParams();
     $jsonData = $request->getArrayFromBody();
     $files = $request->getFiles();
@@ -156,13 +153,15 @@ $response = \JPI\HTTP\Response::json(200, ["message" => "Success"]);
 $response = (new \JPI\HTTP\Response())
     ->withStatus(200)
     ->withHeader("Content-Type", "text/html")
-    ->withBody("<h1>Hello</h1>");
+    ->withBody("<h1>Hello</h1>")
+;
 
 $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
     ->withCacheHeaders([
         "Cache-Control" => "public, max-age=3600",
         "ETag" => true, // Automatically generated from body
-    ]);
+    ])
+;
 ```
 
 ### Middleware
@@ -204,24 +203,21 @@ Here's a complete example putting it all together:
 
 ```php
 <?php
-
-require_once "vendor/autoload.php";
-
 $request = \JPI\HTTP\Request::fromGlobals();
 
 $router = new \JPI\HTTP\Router(
     $request,
-    fn(\JPI\HTTP\Request $request) => \JPI\HTTP\Response::json(404, ["error" => "Not Found"]),
-    fn(\JPI\HTTP\Request $request) => \JPI\HTTP\Response::json(405, ["error" => "Method Not Allowed"])
+    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => \JPI\HTTP\Response::json(404, ["error" => "Not Found"]),
+    fn(\JPI\HTTP\Request $request): \JPI\HTTP\Response => \JPI\HTTP\Response::json(405, ["error" => "Method Not Allowed"])
 );
 
 $app = new \JPI\HTTP\App($router);
 
-$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     return \JPI\HTTP\Response::json(200, ["message" => "Welcome to the API"]);
 });
 
-$app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     $page = $request->getQueryParam("page", "1");
     return \JPI\HTTP\Response::json(200, [
         "posts" => [],
@@ -229,14 +225,14 @@ $app->addRoute("/posts/", "GET", function(\JPI\HTTP\Request $request) {
     ]);
 });
 
-$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id) {
+$app->addRoute("/posts/{id}/", "GET", function(\JPI\HTTP\Request $request, string $id): \JPI\HTTP\Response {
     return \JPI\HTTP\Response::json(200, [
         "id" => $id,
         "title" => "Example Post",
     ]);
 });
 
-$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request) {
+$app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTTP\Response {
     $data = $request->getArrayFromBody();
     // Process creation...
     return \JPI\HTTP\Response::json(201, ["id" => "new-post-id"]);
