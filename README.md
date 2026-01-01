@@ -76,11 +76,7 @@ $app->addRoute("/posts/", "POST", function(\JPI\HTTP\Request $request): \JPI\HTT
     return \JPI\HTTP\Response::json(201, ["message" => "Post created"]);
 });
 
-// Named route (useful for generating URLs)
-$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug): \JPI\HTTP\Response {
-    // Get the post...
-    return \JPI\HTTP\Response::json(200, ["id" => $id, "title" => "Example Post"]);
-}, "post.show");
+
 ```
 
 ### Route Parameters
@@ -94,6 +90,26 @@ $app->addRoute("/posts/{category}/{id}/", "GET", function(\JPI\HTTP\Request $req
         "post_id" => $id,
     ]);
 });
+```
+
+### Named Routes
+
+You can assign names to routes, which allows you to generate URLs for them later:
+
+```php
+$app->addRoute("/posts/{slug}/", "GET", function(\JPI\HTTP\Request $request, string $slug): \JPI\HTTP\Response {
+    return \JPI\HTTP\Response::json(200, ["slug" => $slug]);
+}, "post.show");
+```
+
+To generate URLs for named routes:
+
+```php
+$path = $router->getPathForRoute("post.show", ["slug" => "my-post"]);
+// Result: /posts/my-post/
+
+$url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
+// Result: \JPI\Utils\URL object with full URL
 ```
 
 ### Using Controllers
@@ -166,7 +182,7 @@ $response = \JPI\HTTP\Response::json(200, ["data" => "..."])
 
 ### Middleware
 
-Middleware allows you to process requests before they reach your route handlers:
+Middleware allows you to process requests before they reach your route handlers. You can add a single middleware or an array of middlewares to the `App`:
 
 ```php
 class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
@@ -186,6 +202,9 @@ class AuthMiddleware implements \JPI\HTTP\RequestMiddlewareInterface {
 }
 
 $app->addMiddleware(new AuthMiddleware());
+
+// Or pass an array of middlewares to the App constructor
+$app = new \JPI\HTTP\App($router, [new AuthMiddleware(), new LoggingMiddleware()]);
 ```
 
 ### Handling the Request
@@ -195,20 +214,6 @@ Once routes and middleware are configured, handle the incoming request and send 
 ```php
 $response = $app->handle();
 $response->send();
-```
-
-### Generating URLs for Named Routes
-
-If you've given routes names, you can generate URLs for them:
-
-```php
-$app->addRoute("/posts/{category}/{id}/", "GET", "PostController::show", "post.show");
-
-$path = $router->getPathForRoute("post.show", ["category" => "tech", "id" => "456"]);
-// Result: /posts/tech/456/
-
-$url = $router->getURLForRoute("post.show", ["category" => "tech", "id" => "456"]);
-// Result: \JPI\Utils\URL object with full URL
 ```
 
 ## API Reference
