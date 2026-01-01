@@ -49,8 +49,6 @@ class Router implements RequestHandlerInterface {
     }
 
     /**
-     * Generate a path for a named route.
-     *
      * @throws OutOfBoundsException If the named route is not defined
      */
     public function getPathForRoute(string $name, array $params): string {
