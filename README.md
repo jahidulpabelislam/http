@@ -111,7 +111,7 @@ Instead of closures, you can use controller classes for better organisation:
 
 ```php
 // Define your controller
-class PostController {
+final class PostController {
     use \JPI\HTTP\RequestAwareTrait;
     
     public function show(string $id) {
