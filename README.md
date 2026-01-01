@@ -128,39 +128,7 @@ $url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
 
 ### Request Object
 
-The Request object provides access to all incoming request data:
-
-```php
-// Query parameters (returns string with default fallback)
-$query = $request->getQueryParam("q", "");
-
-// POST form data (returns associative array)
-$postData = $request->getPostParams();
-
-// JSON request body (returns parsed array)
-$jsonData = $request->getArrayFromBody();
-
-// Uploaded files (returns array of UploadedFile objects)
-$files = $request->getFiles();
-
-// Request headers (returns string or null)
-$contentType = $request->getHeaderString("Content-Type");
-
-// HTTP method (returns string: GET, POST, etc.)
-$method = $request->getMethod();
-
-// Request path (returns string)
-$path = $request->getPath();
-
-// Full URL (returns \JPI\Utils\URL object)
-$url = $request->getURL();
-
-// Cookies (returns associative array)
-$cookies = $request->getCookies();
-
-// Custom attributes set by middleware (returns mixed)
-$foo = $request->getAttribute("foo");
-```
+The Request object provides access to all incoming request data, see [API Reference](API.md) for full details.
 
 ### Response Object
 
