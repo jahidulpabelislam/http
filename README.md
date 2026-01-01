@@ -15,7 +15,7 @@ This library has been kept very simple, following the KISS principle.
 
 - **Routing**: Routes with parameters, controller classes or closures as handlers, named routes for URL generation
 - **Middleware Support**
-- **Request Handling**: Access query parameters, POST data, JSON bodies, uploaded files, headers, and cookies
+- **Request Handling**: Access query parameters, input, uploaded files, headers, and cookies
 - **Response Building**: Fluent interface to create text or JSON responses
 
 ## Dependencies
