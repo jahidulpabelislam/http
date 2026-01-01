@@ -19,7 +19,6 @@ This library has been kept very simple, following the KISS principle.
 - **Response Building**: Create text or JSON responses with fluent interface for headers and caching
 - **Named Routes**: Generate URLs for routes by name with parameters
 - **Controller Support**: Use controller classes or closures as route handlers
-- **HTTP Status Codes**: Built-in status code constants with standard messages
 - **File Uploads**: Handle single and multiple file uploads with simple API
 
 ## Dependencies
