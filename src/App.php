@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+/**
+ * The main HTTP application container that manages routing and middleware processing.
+ *
+ * This class coordinates the request handling flow by executing middleware in sequence
+ * before delegating to the router for route matching and execution.
+ */
 class App implements RequestHandlerInterface {
 
     /**
@@ -27,6 +33,13 @@ class App implements RequestHandlerInterface {
         $this->middlewares[] = $middleware;
     }
 
+    /**
+     * Handle the incoming request by processing middleware and routing.
+     *
+     * If middleware are registered, they are executed in sequence with each
+     * middleware having the opportunity to modify the request or short-circuit
+     * processing. Otherwise, the request is passed directly to the router.
+     */
     public function handle(): Response {
         if (!count($this->middlewares)) {
             return $this->router->handle();

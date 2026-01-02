@@ -6,6 +6,12 @@ namespace JPI\HTTP;
 
 use JPI\Utils\Collection;
 
+/**
+ * Represents sanitised input data from query parameters, POST data, or JSON bodies.
+ *
+ * Automatically processes input values by decoding URLs, stripping slashes, and trimming.
+ * Nested arrays are recursively converted to Input instances.
+ */
 class Input extends Collection {
 
     public function __construct(protected array $raw) {

@@ -7,6 +7,13 @@ namespace JPI\HTTP;
 use JPI\Utils\Collection;
 use JPI\Utils\URL;
 
+/**
+ * Represents an HTTP request.
+ *
+ * Provides access to all request data including query parameters, POST data,
+ * headers, cookies, uploaded files, and server variables. Supports parsing
+ * JSON request bodies and storing custom attributes.
+ */
 class Request extends Message {
 
     protected Collection $serverParams;
@@ -22,7 +29,7 @@ class Request extends Message {
 
     protected Input $postParams;
 
-    /** @var UploadedFile[] */
+    /** @var array<string, UploadedFile|UploadedFile[]> */
     protected array $files;
 
     protected URL $url;
@@ -108,6 +115,13 @@ class Request extends Message {
         }
     }
 
+    /**
+     * Normalise uploaded file data into UploadedFile instances.
+     *
+     * Handles both single file uploads and array of files.
+     *
+     * @return UploadedFile|array<UploadedFile>
+     */
     protected function normaliseFileItem(array $item): UploadedFile|array {
         if (!is_array($item["tmp_name"])) {
             return new UploadedFile(
@@ -182,6 +196,11 @@ class Request extends Message {
         return clone $this->postParams;
     }
 
+    /**
+     * Parse the JSON request body and return as an Input collection.
+     *
+     * The parsed result is cached for subsequent calls.
+     */
     public function getArrayFromBody(): Input {
         if ($this->bodyArray === null) {
             $this->bodyArray = new Input(json_decode($this->getBody(), true) ?: []);
@@ -190,6 +209,9 @@ class Request extends Message {
         return clone $this->bodyArray;
     }
 
+    /**
+     * @return array<UploadedFile|array<UploadedFile>>
+     */
     public function getFiles(): array {
         return $this->files;
     }
@@ -210,6 +232,12 @@ class Request extends Message {
         return $this->attributes->get($attribute, $default);
     }
 
+    /**
+     * Create a new URL based on this request with a different path.
+     *
+     * The returned URL uses the same scheme and host as the current request
+     * but with the specified path and no query parameters or fragment.
+     */
     public function makeURL(string $path): URL {
         $url = $this->getURL();
         $url->setPath($path);

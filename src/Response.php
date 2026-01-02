@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+/**
+ * Represents an HTTP response.
+ *
+ * Provides methods to set status codes, headers, and body content.
+ * Supports JSON responses, cache headers, and ETag generation.
+ */
 class Response extends Message {
 
     protected ?string $statusMessage = null;
@@ -17,6 +23,11 @@ class Response extends Message {
         $this->headers = new Headers($headers);
     }
 
+    /**
+     * Create a JSON response.
+     *
+     * Sets the Content-Type header to application/json and encodes the body as JSON.
+     */
     public static function json(
         int $statusCode = 500,
         array $body = [],
@@ -28,6 +39,13 @@ class Response extends Message {
         return $response;
     }
 
+    /**
+     * Set cache-related headers.
+     *
+     * Automatically generates ETags when requested.
+     *
+     * @param array $headers Array of cache headers (Cache-Control, ETag, etc.)
+     */
     public function setCacheHeaders(array $headers): void {
         if (isset($headers["ETag"]) && $headers["ETag"]) {
             $headers["ETag"] = $this->getETag();
@@ -57,6 +75,11 @@ class Response extends Message {
         return $this->statusCode;
     }
 
+    /**
+     * Get the status message for the current status code.
+     *
+     * If no custom message was set, returns the standard HTTP status message.
+     */
     public function getStatusMessage(): string {
         if ($this->statusMessage === null) {
             $this->statusMessage = Status::MESSAGES[$this->getStatusCode()];

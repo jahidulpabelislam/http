@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+/**
+ * Represents an uploaded file.
+ *
+ * Provides information about an uploaded file and a method to save it
+ * to a target location using move_uploaded_file().
+ */
 class UploadedFile {
 
     public function __construct(

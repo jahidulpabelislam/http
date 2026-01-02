@@ -6,6 +6,12 @@ namespace JPI\HTTP;
 
 use Stringable;
 
+/**
+ * Base class for HTTP messages (Request and Response).
+ *
+ * Provides common functionality for managing headers, body content,
+ * and protocol version shared by both requests and responses.
+ */
 class Message {
 
     protected Headers $headers;
@@ -36,6 +42,9 @@ class Message {
         $this->headers->set($header, $value);
     }
 
+    /**
+     * @param bool $add If true, adds to existing header; if false, replaces it
+     */
     public function withHeader(string $header, array|Stringable|string $value, bool $add = false): Message {
         if ($add) {
             $this->addHeader($header, $value);

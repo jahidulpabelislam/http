@@ -7,6 +7,13 @@ namespace JPI\HTTP;
 use OutOfBoundsException;
 use JPI\Utils\URL;
 
+/**
+ * Handles route registration, matching, and execution.
+ *
+ * The router matches incoming requests against registered routes and executes
+ * the appropriate callback or controller method. It supports route parameters,
+ * named routes for URL generation, and automatic OPTIONS request handling.
+ */
 class Router implements RequestHandlerInterface {
 
     protected $notFoundHandler;
@@ -41,6 +48,9 @@ class Router implements RequestHandlerInterface {
         }
     }
 
+    /**
+     * @throws OutOfBoundsException If the named route is not defined
+     */
     public function getPathForRoute(string $name, array $params): string {
         if (!isset($this->namedRoutes[$name])) {
             throw new OutOfBoundsException("Named route $name not defined");
@@ -73,6 +83,12 @@ class Router implements RequestHandlerInterface {
         return $params;
     }
 
+    /**
+     * Handle the request by matching against registered routes.
+     *
+     * Automatically responds to OPTIONS requests with 200 OK.
+     * Returns 405 if route matches but method doesn't, 404 if no route matches.
+     */
     public function handle(): Response {
         $request = $this->getRequest();
 
