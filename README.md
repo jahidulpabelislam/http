@@ -65,7 +65,7 @@ $app = new \JPI\HTTP\App($router);
 
 ### Defining Routes
 
-Routes are defined using the `addRoute` method (either `App` & `Router`), which accepts a path pattern, HTTP method, callback, and optional name:
+Routes are defined using the `addRoute` method (on `App` & `Router`), which accepts a path pattern, HTTP method, callback, and optional name:
 
 ```php
 // Simple GET route
@@ -98,9 +98,11 @@ final class PostController {
 $app->addRoute("/posts/", "GET", "PostController::index");
 ```
 
+Note: closures get the request as the first argument, where as Controllers have access to the request via the `RequestAwareTrait`.
+
 ### Route Parameters
 
-Route parameters are defined using curly braces `{param}` and are passed as arguments to your route handler:
+Route parameters are defined using curly braces (e.g. `{param}`) and then are passed as arguments to your route handler:
 
 ```php
 $app->addRoute("/posts/{category}/{id}/", "GET", function (\JPI\HTTP\Request $request, string $category, string $id): \JPI\HTTP\Response {
