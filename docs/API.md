@@ -89,7 +89,7 @@ Represents an HTTP request. Extends Message.
 Represents an HTTP response. Extends `Message`.
 
 **Static Methods:**
-- `json(int $statusCode = 500, array $body = [], array $headers = [], float $protocolVersion = 1.1): \JPI\HTTP\Response`: Create a JSON response
+- `json(int $statusCode = 500, \JsonSerializable|array $body = [], array $headers = [], float $protocolVersion = 1.1): \JPI\HTTP\Response`: Create a JSON response
 
 **Constructor:**
 - `__construct(int $statusCode = 500, string $body = "", array $headers = [], float $protocolVersion = 1.1)`: Create a response
@@ -99,7 +99,7 @@ Represents an HTTP response. Extends `Message`.
 - `withStatus(int $code, ?string $message = null): \JPI\HTTP\Response`: Set status (fluent)
 - `getStatusCode(): int`: Get the status code
 - `getStatusMessage(): string`: Get the status message
-- `withJSON(array $body): \JPI\HTTP\Response`: Set JSON body (fluent)
+- `withJSON(\JsonSerializable|array $body): \JPI\HTTP\Response`: Set JSON body (fluent)
 - `setCacheHeaders(array $headers): void`: Set cache headers
 - `withCacheHeaders(array $headers): \JPI\HTTP\Response`: Set cache headers (fluent)
 - `getETag(): string`: Get MD5 hash of body as `ETag`
