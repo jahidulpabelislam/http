@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
+use JsonSerializable;
+
 /**
  * Represents an HTTP response.
  *
@@ -30,7 +32,7 @@ class Response extends Message {
      */
     public static function json(
         int $statusCode = 500,
-        array $body = [],
+        JsonSerializable|array $body = [],
         array $headers = [],
         float $protocolVersion = 1.1
     ): Response {
@@ -88,8 +90,8 @@ class Response extends Message {
         return $this->statusMessage;
     }
 
-    public function withJSON(array $body): Response {
-        $this->body = json_encode($body);
+    public function withJSON(JsonSerializable|array $body): Response {
+        $this->body = json_encode($body, JSON_THROW_ON_ERROR);
         $this->setHeader("Content-Type", "application/json");
         return $this;
     }
