@@ -91,11 +91,7 @@ class Response extends Message {
     }
 
     public function withJSON(JsonSerializable|array $body): Response {
-        $json = json_encode($body);
-        if ($json === false) {
-            throw new \RuntimeException('Failed to encode response body as JSON: ' . json_last_error_msg());
-        }
-        $this->body = $json;
+        $this->body = json_encode($body, JSON_THROW_ON_ERROR);
         $this->setHeader("Content-Type", "application/json");
         return $this;
     }
