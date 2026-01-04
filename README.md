@@ -85,7 +85,7 @@ $app->addRoute("/posts/", "POST", function (\JPI\HTTP\Request $request): \JPI\HT
 Instead of closures, you can use classes for better organisation, format is `{class}::{method}` (method must be public):
 
 ```php
-final class PostController {
+final class PostsController {
 
     use \JPI\HTTP\RequestAwareTrait;
 
@@ -95,7 +95,7 @@ final class PostController {
     }
 }
 
-$app->addRoute("/posts/", "GET", "PostController::index");
+$app->addRoute("/posts/", "GET", "PostsController::index");
 ```
 
 Note: closures get the request as the first argument, where as Controllers have access to the request via the `RequestAwareTrait`.
@@ -115,16 +115,16 @@ $app->addRoute("/posts/{category}/{id}/", "GET", function (\JPI\HTTP\Request $re
 You can assign names to routes, which allows you to generate URLs for them later:
 
 ```php
-$app->addRoute("/posts/{slug}/", "GET", "PostController::show", "post.show");
+$app->addRoute("/posts/{slug}/", "GET", "PostsController::show", "posts.show");
 ```
 
 To generate URLs for named routes:
 
 ```php
-$path = $router->getPathForRoute("post.show", ["slug" => "my-post"]);
+$path = $router->getPathForRoute("posts.show", ["slug" => "my-post"]);
 // Result: /posts/my-post/
 
-$url = $router->getURLForRoute("post.show", ["slug" => "my-post"]);
+$url = $router->getURLForRoute("posts.show", ["slug" => "my-post"]);
 // Result: \JPI\Utils\URL object with full URL
 ```
 
