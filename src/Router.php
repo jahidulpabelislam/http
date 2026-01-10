@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace JPI\HTTP;
 
-use OutOfBoundsException;
 use JPI\Utils\URL;
+use OutOfBoundsException;
 
 /**
  * Handles route registration, matching, and execution.
