@@ -18,12 +18,18 @@ class Input extends Collection {
         parent::__construct([]);
 
         foreach ($raw as $key => $value) {
-            if (is_array($value)) {
-                $this->set($key, new static($value));
-            }
-            else {
-                $this->set($key, urldecode(stripslashes(trim((string)$value))));
-            }
+            $this->set($key, $value);
         }
+    }
+
+    public function set(string|int $key, $item): void {
+        if (is_array($item)) {
+            $item = new static($item);
+        }
+        else if (!$item instanceof self) {
+            $item = urldecode(stripslashes(trim((string)$item)));
+        }
+
+        parent::set($key, $item);
     }
 }
